@@ -23,9 +23,6 @@ import Control.Concurrent.Async (mapConcurrently)
 import Control.Monad.IO.Class
 import Data.List.Split
 import Data.Monoid
-import Web.Spock.Safe
-import Lucid
-import Lucid.Bootstrap
 
 -- Part 1
 
@@ -60,22 +57,7 @@ printReddits reddits = error "Not implemented...yet!"
 server :: IO ()
 server = error "Not implemented...yet!"
 
-bootstrap :: Html ()
-bootstrap = error "Not implemented...yet!"
 
-viewListing :: Listing -> Html ()
-viewListing = error "Not implemented...yet!"
-
-renderPost :: Post -> Html ()
-renderPost = error "Not implemented...yet!"
-
-renderThumbnail :: T.Text -> Html ()
-renderThumbnail src = error "Not implemented...yet!"
-
-colMd :: Int -> Html () -> Html ()
-colMd span = error "Not implemented...yet!"
-
--- INTERNALS
 instance FromJSON Post where
   parseJSON = withObject "post" $ \json -> do
     dataO <- json .: "data"
