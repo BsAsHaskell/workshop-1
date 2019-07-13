@@ -19,7 +19,8 @@ library
                        MyReddit,
                        Syntax
   build-depends:       base >= 4.7 && < 5
-                     , HTTP
+                     , req
+                     , data-default-class
                      , aeson
                      , text
                      , string-conversions
