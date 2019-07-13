@@ -1,94 +1,69 @@
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ExtendedDefaultRules #-}
+{-# LANGUAGE OverloadedStrings   #-}
 
 module FinalReddit
-    ( server
-    ) where
+  ( run
+  ) where
 
-import Network.HTTP (simpleHTTP, getRequest, getResponseBody)
-import Data.Aeson
-import Data.Aeson.Types
-import qualified Data.Text as T
-import qualified Data.Vector as V
-import Data.String.Conversions
-import System.Environment
+import           Data.Aeson              (FromJSON (..), eitherDecode,
+                                          withObject, (.:))
+import           Data.String.Conversions (convertString)
+import           Data.Text               (Text)
+import           Network.HTTP            (getRequest, getResponseBody,
+                                          simpleHTTP)
+import           System.Environment      (getArgs)
+import           Text.Pretty.Simple      (pShow)
 
--- Part 2
-import Data.List (transpose)
-import Control.Concurrent.Async (mapConcurrently)
-
--- Part 3
-import Control.Monad.IO.Class
-import Data.List.Split
-import Data.Monoid
-
--- Part 1
-
-data Post = Post
-  { subreddit :: T.Text
-  , author :: T.Text
-  , score :: Int
-  , url :: T.Text
-  , title :: T.Text
-  , thumbnail :: T.Text
+data Movie = Movie
+  { movieId         :: Int
+  , movieTitle      :: Text
+  , movieOverview   :: Text
+  , moviePopularity :: Float
   } deriving (Show)
 
-data Listing = Listing { posts :: [Post] }
+instance FromJSON Movie where
+  parseJSON = withObject "Movie" $ \r -> Movie <$> r .: "id" <*> r .: "title" <*> r .: "overview" <*> r .: "popularity"
+
+newtype Results = Results
+  { results :: [Movie]
+  } deriving (Show)
+
+instance FromJSON Results where
+  parseJSON = withObject "Results" $ \o -> Results <$> o .: "results"
+
+data Comando
+  = Buscar String
+  | Recomendar Int
   deriving (Show)
 
-getReddit :: String -> IO Listing
-getReddit subreddit = do
-  let url = "http://api.themoviedb.org/3/movie/550?api_key=2ba61b38c35668c26d754910aac7a729"
-  response <- simpleHTTP (getRequest url)
-  body <- getResponseBody response
-  print body
-  case eitherDecode (cs body) of
-    Right listing -> pure listing
-    Left e -> error e
+run :: IO ()
+run = do
+  args <- getArgs
+  case parseArgs args of
+    Buscar query   -> llamarAPI (searchURL query)
+    Recomendar id' -> llamarAPI (recommendURL id')
 
--- Part 2
+llamarAPI :: String -> IO ()
+llamarAPI url = do
+  req <- simpleHTTP $ getRequest url
+  body <- getResponseBody req
+  putStrLn $
+    case eitherDecode (convertString body) of
+      Left e  -> e
+      Right x -> mostrar x
 
-getReddits :: [String] -> IO Listing
-getReddits reddits = do
-  listings <- mapConcurrently getReddit reddits
-  pure (mergeListings listings)
+mostrar :: Results -> String
+mostrar = convertString . pShow
 
--- Technically can be any Foldable but this suffices for now.
-mergeListings :: [Listing] -> Listing
-mergeListings listings = Listing (interleaveMany (map posts listings))
-  where interleaveMany = concat . transpose
+parseArgs :: [String] -> Comando
+parseArgs ["buscar", texto]  = Buscar texto
+parseArgs ["recomendar", id] = Recomendar (read id)
+parseArgs _                  = error "No funciona asi papááááááa"
 
-printReddits :: IO ()
-printReddits = do
-  listing <- getReddits ["haskell", "darksouls"]
-  print listing
+searchURL :: String -> String
+searchURL query = "http://api.themoviedb.org/3/search/movie?api_key=" <> key <> "&query=" <> query
 
--- Part 3 (Server)
+recommendURL :: Int -> String
+recommendURL id' = "http://api.themoviedb.org/3/movie/" <> show id' <> "/recommendations?api_key=" <> key
 
-server :: IO ()
-server = do
-  reddits <- getArgs
-  case reddits of
-    [] -> putStrLn "No Reddits Provided"
-    _ -> do
-      listing <- liftIO (getReddits reddits)
-      print listing
-
-instance FromJSON Post where
-  parseJSON = withObject "post" $ \json -> do
-    dataO <- json .: "data"
-    subreddit_ <-  dataO .: "subreddit"
-    author_ <- dataO .: "author"
-    score_ <- dataO .: "score"
-    url_ <- dataO .: "url"
-    title_ <- dataO .: "title"
-    thumbnail_ <- dataO .: "thumbnail"
-    pure (Post subreddit_ author_ score_ url_ title_ thumbnail_)
-
-instance FromJSON Listing where
-  parseJSON = withObject "listing" $ \json -> do
-    dataO <- json .: "data"
-    children <- dataO .: "children"
-    posts_ <- withArray "children" (mapM parseJSON . V.toList) children
-    pure (Listing posts_)
+key :: String
+key = "2ba61b38c35668c26d754910aac7a729"
