@@ -14,17 +14,18 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 library
+  ghc-options:         -Wall -Wno-unused-imports
   hs-source-dirs:      src
   exposed-modules:     FinalReddit,
                        MyReddit,
-                       Syntax
+                       Syntax,
+                       Http
   build-depends:       base >= 4.7 && < 5
-                     , req
-                     , data-default-class
                      , aeson
                      , text
                      , string-conversions
-                     , pretty-simple
+                     , req
+                     , data-default-class
   default-language:    Haskell2010
 
 executable redditui
