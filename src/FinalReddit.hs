@@ -1,17 +1,18 @@
-{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module FinalReddit
   ( run
   ) where
 
-import           Data.Aeson              (FromJSON (..), eitherDecode,
-                                          withObject, (.:))
+import           Control.Monad           (forM_)
+import           Control.Monad.IO.Class
+import           Data.Aeson              (FromJSON (..), Value (..),
+                                          eitherDecode, withObject, (.:))
+import           Data.Monoid             (mempty)
 import           Data.String.Conversions (convertString)
 import           Data.Text               (Text)
-import           Network.HTTP            (getRequest, getResponseBody,
-                                          simpleHTTP)
+import           Http                    (get)
 import           System.Environment      (getArgs)
-import           Text.Pretty.Simple      (pShow)
 
 data Movie = Movie
   { movieId         :: Int
@@ -21,14 +22,23 @@ data Movie = Movie
   } deriving (Show)
 
 instance FromJSON Movie where
-  parseJSON = withObject "Movie" $ \r -> Movie <$> r .: "id" <*> r .: "title" <*> r .: "overview" <*> r .: "popularity"
+  parseJSON (Object o) = do
+    id_ <- o .: "id"
+    title_ <- o .: "title"
+    overview_ <- o .: "overview"
+    popularity_ <- o .: "popularity"
+    pure (Movie id_ title_ overview_ popularity_)
+  parseJSON _ = fail "Llel"
 
-newtype Results = Results
+data Results = Results
   { results :: [Movie]
   } deriving (Show)
 
 instance FromJSON Results where
-  parseJSON = withObject "Results" $ \o -> Results <$> o .: "results"
+  parseJSON value = withObject "Results" (\o -> do
+    results_ <- o .: "results"
+    pure (Results results_)) value
+  parseJSON _ = fail "Lel"
 
 data Comando
   = Buscar String
@@ -39,31 +49,32 @@ run :: IO ()
 run = do
   args <- getArgs
   case parseArgs args of
-    Buscar query   -> llamarAPI (searchURL query)
-    Recomendar id' -> llamarAPI (recommendURL id')
+    Buscar query   -> do
+      resultados <- llamarAPI (searchURL (convertString query))
+      imprimir resultados
+    Recomendar id' -> do
+      resultados <- llamarAPI (recommendURL id')
+      imprimir resultados
 
-llamarAPI :: String -> IO ()
-llamarAPI url = do
-  req <- simpleHTTP $ getRequest url
-  body <- getResponseBody req
-  putStrLn $
-    case eitherDecode (convertString body) of
-      Left e  -> e
-      Right x -> mostrar x
+imprimir :: Results -> IO ()
+imprimir (Results resultados) = do
+  forM_ resultados imprimirPeli
+ where
+  imprimirPeli (Movie id_ titulo_ overview_ _) = putStrLn (convertString (titulo_ <> ": " <> convertString (show id_) <> "\n" <> overview_))
 
-mostrar :: Results -> String
-mostrar = convertString . pShow
+llamarAPI :: Text -> IO Results
+llamarAPI url = Http.get url
 
 parseArgs :: [String] -> Comando
 parseArgs ["buscar", texto]  = Buscar texto
 parseArgs ["recomendar", id] = Recomendar (read id)
 parseArgs _                  = error "No funciona asi papááááááa"
 
-searchURL :: String -> String
+searchURL :: Text -> Text
 searchURL query = "http://api.themoviedb.org/3/search/movie?api_key=" <> key <> "&query=" <> query
 
-recommendURL :: Int -> String
-recommendURL id' = "http://api.themoviedb.org/3/movie/" <> show id' <> "/recommendations?api_key=" <> key
+recommendURL :: Int -> Text
+recommendURL id' = "http://api.themoviedb.org/3/movie/" <> convertString (show id') <> "/recommendations?api_key=" <> key
 
-key :: String
+key :: Text
 key = "2ba61b38c35668c26d754910aac7a729"
