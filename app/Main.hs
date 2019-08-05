@@ -1,6 +1,6 @@
 module Main where
 
-import FinalReddit
+import Pelis
 
 main :: IO ()
 main = run

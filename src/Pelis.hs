@@ -1,4 +1,4 @@
-module MyReddit
+module Pelis
   ( run
   ) where
 

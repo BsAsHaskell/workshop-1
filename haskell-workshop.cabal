@@ -2,24 +2,21 @@ name:                haskell-workshop
 version:             0.1.0.0
 synopsis:            Initial project template from stack
 description:         Please see README.md
-homepage:            https://github.com/5outh/haskell-workshop#readme
+homepage:            https://github.com/BsAsHaskell/workshop-1/
 license:             BSD3
 license-file:        LICENSE
-author:              Benjamin Kovach
-maintainer:          benjamin@kovach.me
+author:              Ezequiel Alvarez, Joaquin Azcarate
 copyright:           MIT
-category:            Web
+category:            Workshop
 build-type:          Simple
--- extra-source-files:
 cabal-version:       >=1.10
 
 library
   ghc-options:         -Wall -Wno-unused-imports
   hs-source-dirs:      src
-  exposed-modules:     FinalReddit,
-                       MyReddit,
-                       Syntax,
-                       Http
+  exposed-modules:     Pelis
+                     , Intro
+                     , Http
   build-depends:       base >= 4.7 && < 5
                      , aeson
                      , text
@@ -35,7 +32,3 @@ executable redditui
   build-depends:       base
                      , haskell-workshop
   default-language:    Haskell2010
-
-source-repository head
-  type:     git
-  location: https://github.com/sellerlabs/haskell-workshop
