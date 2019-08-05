@@ -1,122 +1,118 @@
-# haskell-workshop
+# 1er Taller de Haskell
 
-Haskell Workshop - Spring 2016
+Taller de Haskell - Agosto 2019
 
-## Overview
+## Introducción
 
-*See __HTTPS Fix__ below concerning breaking change in Reddit API.*
+Este taller intenta ser una introducción de cero-a-algo al lenguaje de programación
+funcional Haskell, es decir que el único pre-requisito para hacerlo es saber programar.
 
-This is intended to be a zero-to-something introduction to Haskell for working programmers who are
-interested in functional programming, but don't know where to start.
+El taller consiste de dos partes:
 
-We assume a basic knowledge of web development in this tutorial. If you're familiar with basic
-client/server interaction and HTML, this tutorial should be easy to follow!
+1. Vamos a tener una introducción super veloz al lenguaje, su sintaxis y libreria estandard
+siguiendo el archivo `Intro.hs` en la carpeta `src/`.
+2. Formando grupos de 2 o 3 (aunque no es obligatorio, recomendamos hacerlo de al menos dos) vamos a implementar
+un cliente super simple de linea de comandos para la API de [TheMovieDB](https://themoviedb.org).
 
-The workshop will consist of two parts:
+Para empezar, queremos que si hacemos
 
-1. Matt Parsons will present an overview of the syntax/look and feel of Haskell, so you won't get lost! You can
-follow along with this section using the `Syntax.hs` source file.
-2. Benjamin Kovach will walk you through an implementation of a simple web application that reads posts from
-multiple subreddit listings concurrently and presents them to a user in a web browser. We will work through this
-together, fleshing out `MyReddit.hs` as we go.
+```bash
+stack run buscar "la batalla de argelia"
+```
 
-## Getting Started
+se consulte al endpoint de búsquedas documentado [aquí](https://developers.themoviedb.org/3/search/search-movies)
+y se imprima en pantalla la lista de peliculas que el mismo devuelve.
 
-### Prerequisite tools you'll need
+Luego, vamos a usar el [endpoint de recomendaciones](https://developers.themoviedb.org/3/movies/get-movie-recommendations)
+y queremos que al hacer
+
+```bash
+stack run recomendar 917
+```
+
+nos imprima las recomendaciones para la peli con ID `917`.
+
+## Preparación
+
+### Requisitos
+
+#### una compu
+
+Vas a necesitar una computadora para hacer el ejercicio.
+
+En principio, como el taller está pensado para hacer de a pares capaz no es necesario que traigas tu compu personal
+si ya sabes con quien vas a trabajar, pero estaría bueno igual.
+
+Sea el caso que no tengas acceso a una computadora, contactate con los organizadores y vemos que podemos hacer.
 
 #### git
 
-A version control system. You'll need this to pull down the boilerplate code located in this repository.
-
-Installation instructions are located here, for various operating systems.
+Asumimos que tenes idea de como usar git, pero por si las moscas:
 
 https://git-scm.com/book/en/v2/Getting-Started-Installing-Git
 
 #### stack
 
-The haskell toolchain and package manager. Stack will install the Haskell compiler for you _and_ manage the dependencies of your project.
+`stack` es el package manager y orquestador de compilación de Haskell. Vamos a necesitar tenerlo instalado.
 
-Installation instructions are located here, for various operating systems:
+Las instrucciones para eso se encuentran aquí:
 
-http://docs.haskellstack.org/en/stable/install_and_upgrade/#mac-os-x
+http://docs.haskellstack.org/en/stable/install_and_upgrade/
 
-#### a computer
+#### una mente abierta
 
-You'll need this to compile and run your project.
+Haskell es raro. No comparte casi nada con ningún lenguaje conocido, pero no por eso es mas difícil!
 
-#### an open mind
+### Instalación
 
-Haskell might look strange at first, but it's no more difficult than any other language! Keep an open mind and you'll be writing your own code in no time.
-
-### Setting up the project
-
-To get the project set up, you'll need to run the following series of commands:
+Como el proyecto usa varias librerias, y las mismas pueden ser pesadas, recomendamos *fuertemente*
+instalarlas en sus casas antes de venir al taller. Para esto deben correr:
 
 ```bash
-$ git clone https://github.com/sellerlabs/haskell-workshop
-$ cd haskell-workshop
-$ stack setup
-$ stack install
+git clone https://github.com/BsAsHaskell/workshop-1
+cd workshop-1
+stack setup
+stack build
 ```
 
-**This will take a long time the first time you do it!** If all goes well, you should see something along the following lines:
+**Esto puede tardar un buen rato.** Si todo sale bien, vas a ver algo del estilo:
 
 ```
-Copying from /Users/Ben/projects/haskell-workshop/.stack-work/install/x86_64-osx/lts-5.13/7.10.3/bin/redditui to /Users/Ben/.local/bin/redditui
-
-Copied executables to /Users/Ben/.local/bin:
-- redditui
+haskell-workshop-0.1.0.0: copy/register
+Installing library in /Users/clrnd/Src/haskell-workshop/.stack-work/install/x86_64-osx/lts-12.10/8.4.3/lib/x86_64-osx-ghc-8.4.3/haskell-workshop-0.1.0.0-4RGcRuf1daA1fbO4MfLutr
+Installing executable pelis in /Users/clrnd/Src/haskell-workshop/.stack-work/install/x86_64-osx/lts-12.10/8.4.3/bin
+Registering library for haskell-workshop-0.1.0.0..
 ```
 
-If `/Users/$USER/.local/bin` is properly set in your `PATH`, you should be able to do this:
+Y deberian poder correr el ejecutable:
 
-```hs
-$ redditui
-redditui: Not implemented...yet!
+```bash
+stack run
+> pelis: Not implemented...yet!
 ```
 
-At this point, you should be good to go!
+#### (Opcional) Intero con VSCode
 
-### HTTPS Fix
+**Intero** es una herramienta que te permite habilitar el uso interactivo de Haskell para detectar errores y conocer información del programa que estás escribiendo (como los tipos de cada expresión). Para descargar Intero, te recomendamos descargarte [este ejemplo](https://github.com/pdep-utn/mn-funcional-kata00/archive/master.zip). Descomprimilo en cualquier directorio donde tengas permisos para tu usuario logueado, y ejecutá el siguiente comando en la terminal o línea de comando:
 
-Accessing reddit using HTTP instead of HTTPS no longer works as shown during the live coding session. Here is the suggested fix to get `getReddit` working again.
-
-#### `MyReddit.hs`
-
-```hs
--- remove:
--- import Network.HTTP (simpleHTTP, getRequest, getResponseBody)
-
--- add:
-import qualified Network.Wreq as W (asJSON, get, responseBody)
-import Control.Lens.Getter ((^.))
+```bash
+stack build intero
+stack test
 ```
 
-Replace `getReddit` with
+En el caso de que tengas inconvenientes en Win10 y no encuentres el ejecutable una vez instalado, podés probar
 
-```hs
-getReddit :: String -> IO Listing
-getReddit subreddit = do
-  let url = "https://www.reddit.com/r/" <> subreddit <> "/hot/.json"
-  r <- W.asJSON =<< W.get url
-  pure (r ^. W.responseBody)
+```bash
+stack build intero --copy-compiler-tool
 ```
 
-#### `haskell-workshop.cabal`
+Finalmente, en Visual Studio Code instalás el plugin **Haskero** y listo!
 
-Add `containers`, `lens` and `wreq` to dependencies.
+## Después del taller
 
-#### `stack`
+Si te gustó y queres seguir aprendiendo, te dejamos unos links:
 
-`stack build` and—touch wood—you should be able to follow the tutorial.
-
-### After the Workshop
-
-Found yourself interested in learning more? Here's a short list of some great ways to start learning Haskell:
-
-- [http://haskellbook.com/](http://haskellbook.com/) - An comprehensive, in-development book. Very up-to-date and extensive! Great for beginners and experts alike.
-- [http://learnyouahaskell.com/](http://learnyouahaskell.com/) - How Ben picked up the language. Showing a bit of age but a fun, engaging introduction nonetheless.
-- [https://github.com/bitemyapp/learnhaskell](https://github.com/bitemyapp/learnhaskell) - Co-author of haskellbook's collection of resources on how to get started.
-- [http://dev.stephendiehl.com/hask/](http://dev.stephendiehl.com/hask/) - Intermediate level collection of tips and tricks for getting more out of Haskell once you've got the basics down.
-- [State of the Haskell Ecosystem](https://github.com/Gabriel439/post-rfc/blob/master/sotu.md) - A collection of topics, how well Haskell supports them, and what libraries are most useful for them
-- [Haskell Is Easy](http://www.haskelliseasy.com) - A quick start guide to using Haskell
+- [http://haskellbook.com/](http://haskellbook.com/) - El libro mas recomendado por la comunidad actualmente. Actualizado y con un enfoque práctico.
+- [http://learnyouahaskell.com/](http://learnyouahaskell.com/) - Una introducción un poco menos dura pero también menos industrial.
+- [https://github.com/bitemyapp/learnhaskell](https://github.com/bitemyapp/learnhaskell) - Una colección de muchos recursos interesantes.
+- [Haskell Is Easy](http://www.haskelliseasy.com) - Una guia corta para arrancar con Haskell.
