@@ -1,54 +1,51 @@
--- First, we need comments. Haskell has two styles of comments: these
--- line comments, prepended by a --.
+-- Hola! Bienvenides al Workshop introductorio de Haskell
+-- Primero que nada, veamos como escribir comentarios:
+-- Estos son comentarios de linea, ocupan ... una linea
 
-{- 
-Block comments look like this. They can be nested and span multiple lines.
-They can also be placed inline of code, and they're often used for
-"language pragmas."
- -}
+{- Esto es un comentario de bloque
+ - y puede ocupar varios renglones -}
 
--- This file (and presentation) goes into Haskell syntax more than you
--- might expect for a "intro to $LANGUAGE" workshop. Most languages in
--- common use today inherit their syntax from C, FORTRAN, or Lisp.
--- Haskell's syntax is *very* different, and your intuitions from other
--- languages won't carry over.
+-- Todo archivo de un proyecto Haskell tiene que definir de que modulo es,
+-- y debe corresponder con el nombre del archivo y su ubicación en el proyecto (como en Java)
+module Intro where
 
--- Every Haskell source file defines a module. If you don't specify one,
--- then the compiler assumes that it's a `Main` module, with a `main`
--- function that can be executed. That's not the case here, so we provide
--- a module declaration:
-module Syntax where
+-- Con el sintaxis anterior el modulo exporta todas las funciones y declaraciones que define.
+-- Si se quiere, se puede limitar que cosas exporta asi:
+-- `module Intro where (unaFuncion, UnTipo)`
+--
+-- Aparte, si el nombre del modulo es `Main` entonces su función `main`
+-- será el punto de entrada del ejectuable final.
 
+-- A diferencia de JavaScript, pero como Python, Haskell es sensible a la indentación.
+-- Eso significa que las declaraciones deben arrancar en la columna 0,
+-- y cualquier linea puede partirse siempre y cuando se indente un poco mas que la anterior.
 
--- First thing is first: Haskell is *indentation sensitive*, like Python.
--- Top level declarations must start at column 0. Otherwise, it's a parse
--- error. If you start an expression or declaration on a column, you can
--- continue that expression or declaration on a new line as long as you
--- indent a little more.
-
--- The "top level" of a Haskell source file is a bunch of declarations. The
--- first set that we'll talk about are *data declarations*. This is how you
--- create new data structures and types.
+-- Siendo Haskell un lenguaje con tipado estático, uno de los principales elementos que vamos
+-- a definir son, justamente, tipos.
 
 ---------------------------------------------------------------------------
---                        Data Declarations                              --
+--                        Tipos de Datos                                 --
 ---------------------------------------------------------------------------
 
--- If you're coming from another programming language, you're used to
--- reading `=` as 'assignment'. Haskell uses `=` to mean `is defined as`.
+-- En otro lenguajes `=` suele significar asignación.
+-- En Haskell, `=` significa "está definido así".
 
---   +--------------------------- Name of the *type*
---   |         +----------------- Name of the *data constructor*
---   |         |       +--------- Takes a `String` parameter
---   |         |       |      +-- Takes an `Int` parameter
+--   +--------------------------- Nombre del *tipo*
+--   |         +----------------- Nombre del *constructor*
+--   |         |       +--------- Toma una `String`
+--   |         |       |      +-- Y toma un `Int`
 --   V         V       V      V
-data PersonA = PersonA String Int
+data Persona = Persona String Int
 
--- First, we use the `data` keyword to specify that we're defining a new
--- type of data. All concrete types start with a capital letter, and the
--- name of this type is PersonA. We define the data constructor `PersonA`,
--- which takes two parameters: one of type `String` and another of type
--- `Int`. Data constructors are used just like functions.
+-- Usamos `data` para definir un nuevo tipo de datos.
+-- Todos los tipos deben empezar con mayúscula, y el nombre de este tipo es `Persona`.
+-- Este tipo toma dos argumentos: Uno de tipo `String` y otro de tipo `Int`.
+-- El constructor se usa igual que una función, y es la única manera de construir
+-- variables de tipo `Persona`.
+-- Por ejemplo:
+
+pepe = Persona "Pepe" 17
+
 --
 -- We can think of a PersonA as being "a string *and* an int." Often, we
 -- also want to say "or." We can do this in Haskell.
@@ -397,9 +394,9 @@ contrivedCompose = add 5 . multiply 10
 
 -- Composition is all about defining a pipeline where the values from from
 -- left to right through the functions. A long chain of composition, like
---     
+--
 --     composed = foo . bar . baz . quux
--- 
+--
 -- is generally nicer than 
 --    
 --     composed x = foo (bar (baz (quux x)))
