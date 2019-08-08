@@ -93,7 +93,7 @@ stack run
 
 #### (Opcional) Intero con VSCode
 
-**Intero** es una herramienta que te permite habilitar el uso interactivo de Haskell para detectar errores y conocer información del programa que estás escribiendo (como los tipos de cada expresión). Para descargar Intero, te recomendamos descargarte [este ejemplo](https://github.com/pdep-utn/mn-funcional-kata00/archive/master.zip). Descomprimilo en cualquier directorio donde tengas permisos para tu usuario logueado, y ejecutá el siguiente comando en la terminal o línea de comando:
+**Intero** es una herramienta que te permite habilitar el uso interactivo de Haskell para detectar errores y conocer información del programa que estás escribiendo (como los tipos de cada expresión). Para instalarlo, recomendamos pararte en la carpeta del taller y correr:
 
 ```bash
 stack build intero
