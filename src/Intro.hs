@@ -414,5 +414,23 @@ customPrompt string = do
     putStrLn promptStr
     getLine
 
+-- ***********************************************
+-- ****************** EJERCICIO 4 ****************
+-- ***********************************************
+
+-- En este ejercicio vamos a juntar varias cosas de las que estuvimos viendo.
+-- Queremos hacer una función que le pregunte al usuario por el nombre de una mascota,
+-- y que según el nombre ingresado devuelva un perro o un gato.
+-- Si el nombre es 'garfield', 'salem' o 'bola de nieve II',
+-- devuelve un Gato, si no, devuelve un Perro cuya edad es la cantidad de caracteres del nombre
+-- (un String es lo mismo que [Char])
+
+crearMascota :: IO Animal
+crearMascota = error "implementame"
+
+-- ***********************************************
+-- *************** FIN EJERCICIO 4 ***************
+-- ***********************************************
+
 -- Suficiente introducción por ahora.
 -- ¡Ahora veamos el ejercicio!
