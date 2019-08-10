@@ -144,19 +144,19 @@ Toda esta biblioteca se encarga de manejar los errores cuando las claves no est�
 
 Muchas veces queremos obtener más de una clave de un JSON, y combinarlo con otras claves (como era nuestro ejemplo original). Por suerte `Parser`, al igual que `IO` que vimos antes, es una `monada` y está programada para poder ser combinada, por lo que podemos escribir:
 ```haskell
-jsonAActriz objeto = do
+parseJSON (Object objeto) = do
   nombre_     <- objeto .: "name"
   cumpleaños_ <- objeto .: "birthday"
   ...
 ```
 Ahora que tenemos los dos valores, necesitamos construir nuestro valor con el tipo:
 ```haskell
-jsonAActriz objeto = do
+parseJSON (Object objeto) = do
   nombre_     <- objeto .: "name"
   cumpleaños_ <- objeto .: "birthday"
   pure (Actriz nombre_ cumpleaños_)
 ```
-y tenemos nuestra función: `jsonAActriz :: Object -> Parser Actriz`.
+y tenemos nuestra función: `parseJSON :: Value -> Parser Actriz`.
 
 Como `parseJSON` toma un `Value` y nosotros solo podríamos parsear un `Object`, necesitamos completar el patrón con un error, por ejemplo: `parseJSON (Array _) = fail "no pude interpretar el objeto"`
 
@@ -223,8 +223,9 @@ data Persona = Persona
  { nombre :: Text
  , direccion :: Text }
 
-instance FromJSON Persona
+instance FromJSON Persona where
+    ...
 
-getPersona :: Text => IO Persona
-getPersona nombre = get ("http://www.personas.com/" <> nombre)
+getPersona :: Text -> IO Persona
+getPersona nombre = Http.get ("http://www.personas.com/" <> nombre)
 ```

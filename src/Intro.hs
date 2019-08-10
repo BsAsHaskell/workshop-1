@@ -87,6 +87,10 @@ data Animal = Perro String Int | Gato String
 -- > persona1 = Persona "nombre" 5
 -- Fijate como podés imprimir al animal y no a la persona.
 -- ¿Cuál es mas grande, un perro llamado "bobby" de 7 años o un gato llamado "pepita"?
+
+unPerro = Perro "bobby" 6
+unGato = Gato "jorgi"
+
 --
 -- ***********************************************
 -- **************** FIN EJERCICIO 1 **************
@@ -193,10 +197,10 @@ powerUp (Persona nombre poder) = Persona nombre (poder + 1)
 -- > :t algo
 
 getNombre :: Persona -> String
-getNombre = error "Escribime!"
+getNombre (Persona nombre _) = nombre
 
 getPoder :: Persona -> Int
-getPoder = error "Escribime!"
+getPoder (Persona _ poder) = poder
 
 -- ***********************************************
 -- **************** FIN EJERCICIO 2 **************
@@ -349,7 +353,8 @@ doce = sumarCinco 7
 -- número dado `x`. Definir esa función.
 
 levelear :: Int -> [Jugador] -> [Jugador]
-levelear = error "Escribime!"
+levelear poderExtra jugadores = map sumarPoder jugadores
+    where sumarPoder (Jugador nombre poder) = Jugador nombre (poder + poderExtra)
 
 -- ***********************************************
 -- *************** FIN EJERCICIO 3 ***************
@@ -434,7 +439,15 @@ customPrompt string = do
 -- (un String es lo mismo que [Char])
 
 crearMascota :: IO Animal
-crearMascota = error "implementame"
+crearMascota = do
+    line <- getLine
+    let resultado = decidirAnimal line
+    pure resultado
+
+decidirAnimal nombre = case nombre of
+    "garfield" -> Gato "garfield"
+    "salem" -> Gato "salem"
+    _ -> Perro nombre (length nombre)
 
 -- ***********************************************
 -- *************** FIN EJERCICIO 4 ***************
