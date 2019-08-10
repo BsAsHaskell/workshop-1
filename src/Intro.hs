@@ -1,19 +1,19 @@
 -- Hola! Bienvenides al Workshop introductorio de Haskell
 -- Primero que nada, veamos como escribir comentarios:
--- Estos son comentarios de linea, ocupan ... una linea
+-- Estos son comentarios de línea, ocupan ... una línea
 
 {- Esto es un comentario de bloque
  - y puede ocupar varios renglones -}
 
--- Todo archivo de un proyecto Haskell tiene que definir de que modulo es,
+-- Todo archivo de un proyecto Haskell tiene que definir de que módulo es,
 -- y debe corresponder con el nombre del archivo y su ubicación en el proyecto (como en Java)
 module Intro where
 
--- Con la sintaxis anterior el modulo exporta todas las funciones y declaraciones que define.
+-- Con la sintaxis anterior el módulo exporta todas las funciones y declaraciones que define.
 -- Si se quiere, se puede limitar que cosas exporta asi:
 -- `module Intro where (unaFuncion, UnTipo)`
 --
--- Aparte, si el nombre del modulo es `Main` entonces su función `main`
+-- Aparte, si el nombre del módulo es `Main` entonces su función `main`
 -- será el punto de entrada del ejectuable final.
 
 -- A diferencia de JavaScript, pero como Python, Haskell es sensible a la indentación.
@@ -40,7 +40,7 @@ data Persona = Persona String Int
 -- Usamos `data` para definir un nuevo tipo de datos.
 -- Todos los tipos deben empezar con mayúscula, y el nombre de este tipo es `Persona`.
 -- Este tipo toma dos argumentos: Uno de tipo `String` y otro de tipo `Int`.
--- Capaz son el nombre y el poder de una persona.
+-- En este caso vamos a usarlos para representar el nombre y el poder de una persona.
 -- El constructor se usa igual que una función, y es la única manera de construir
 -- variables de tipo `Persona`.
 -- Por ejemplo:
@@ -85,18 +85,18 @@ data Animal = Perro String Int | Gato String
 -- Abrí en la consola de Haskell este archibo con `stack ghci src/Intro.hs`.
 -- Ahora definí un animal y una persona en la consola.
 -- > persona1 = Persona "nombre" 5
--- Fijate como podes imprimir al animal y no a la persona.
+-- Fijate como podés imprimir al animal y no a la persona.
 -- ¿Cuál es mas grande, un perro llamado "bobby" de 7 años o un gato llamado "pepita"?
 --
 -- ***********************************************
 -- **************** FIN EJERCICIO 1 **************
 -- ***********************************************
 
--- Hay otra forma mas de defnir tipos y la llamamos "record syntax".
+-- Hay otra forma mas de definir tipos y la llamamos "record syntax".
 -- Lo bueno que tiene es que nos deja nombrar los parámetros de un constructor
 -- y al mismo tiempo define funciones para obtener los mismos.
 -- La única trampa es que estas funciones generadas no pueden repetirse
--- en el miso modulo, por eso es buena práctica prefijarlas con el
+-- en el mismo módulo, por eso es buena práctica prefijarlas con el
 -- nombre del tipo.
 
 data Jugador = Jugador
@@ -153,9 +153,9 @@ goku = Persona "Goku" 9001
 -- a que te referís. Pero es una buena práctica anotar todas las definiciones
 -- del nivel superior, o sea a nivel módulo. Esto es por dos razones:
 
--- Primero, hace mucho mas facil de leer y mantener el código si sabes de que tipo
+-- Primero, hace mucho más fácil de leer y mantener el código si sabes de que tipo
 -- es un valor o una función.
--- Y Segundo, le hace el trabajo de deducir el tipo del resto del programa mas facil
+-- Y Segundo, le hace el trabajo de deducir el tipo del resto del programa más fácil
 -- al compilador.
 
 -- Escribamos una función ahora. Las funciones son valores de primer tipo en Haskell
@@ -177,11 +177,11 @@ powerUp (Persona nombre poder) = Persona nombre (poder + 1)
 -- powerUp (Persona nombre poder) =
 --     +-------------------------- Devolvemos una Persona nueva
 --     |       +------------------ Con el mismo nombre
---     |       |     +------------ Y el poder mas uno
+--     |       |     +------------ Y el poder más uno
 --     V       V     V
 --     Persona name (poder + 1)
 
--- Haskell es un lenguaje inmutable, asi que no podemos "modificar" la
+-- Haskell es un lenguaje inmutable, así que no podemos "modificar" la
 -- persona, solo podemos devolver una nueva.
 
 -- ***********************************************
@@ -202,7 +202,7 @@ getPoder = error "Escribime!"
 -- **************** FIN EJERCICIO 2 **************
 -- ***********************************************
 
--- Las funciones que toman multiples argumentos usan la misma flecha,
+-- Las funciones que toman múltiples argumentos usan la misma flecha,
 -- siendo la última cosa lo que devuelve la función.
 -- Esta función absorbe el poder de una persona. El guión bajo en la segunda
 -- persona significa "no voy a usar este valor" y no les asignamos una variable.
@@ -211,10 +211,10 @@ absorber :: Persona -> Persona -> Persona
 absorber (Persona nombre poderAnterior) (Persona _ otroPoder) =
     Persona nombre (poderAnterior + otroPoder)
 
--- ¡Atención! ¿Qué pasa con la persona que le absorvimos el poder?
+-- ¡Atención! ¿Qué pasa con la persona que le absorbimos el poder?
 -- ¿No tendríamos que volverlo a 0? Como Haskell es inmutable no podemos
 -- modificarla, pero si podemos devolver las dos "nuevas" personas.
--- Para esto usamos una Tupla, que es basicamente un tipo que tiene
+-- Para esto usamos una Tupla, que es básicamente un tipo que tiene
 -- dos variables del mismo o distinto tipo.
 -- Esta función tambien introduce el `let`, que es la manera que tenemos
 -- de asignar valores temporales en una función.
@@ -231,7 +231,7 @@ absorber2 persona victima =
 -- `let ... in` nos permite definir varias cosas que solo existen en la
 -- expresion que sigue inmediatamente al `in`.
 --
--- Las funciones aplican con mas prioridad que cualquier cosa, por lo que
+-- Las funciones aplican con más prioridad que cualquier cosa, por lo que
 --
 --     getPoder persona + getPoder victima
 --
@@ -254,7 +254,7 @@ absorber3 persona victima =
     nuevaPersona = Jugador (jugadorNombre persona) poderAbsorbido
     victimaDrenada = Jugador (jugadorNombre victima) 0
 
--- Notemos que esta vez usamos los "getters" que nos regalo el record syntax.
+-- Notemos que esta vez usamos los "getters" que nos regaló el record syntax.
 --
 -- Otra funcionalidad poderosa de Haskell es el pattern matching. El mismo lo usamos
 -- para desconstruir Personas anteriormente. Pero también podemos hacer pattern matching
@@ -278,8 +278,8 @@ seLlamaBobby (Perro "bobby" _) = True
 seLlamaBobby (Perro "BOBBY" _) = True
 seLlamaBobby _ = False
 
--- Pasemos a algo mas interesante. Las listas o arrays en Haskell se definen así,
--- siendo `:` el construtor de lista que toma un elemento y una lista
+-- Pasemos a algo más interesante. Las listas o arrays en Haskell se definen así,
+-- siendo `:` el constructor de lista que toma un elemento y una lista
 -- y nos devuelve otra lista con el elemento al principio.
 
 unaListaDeEnteros :: [Int]
@@ -293,11 +293,15 @@ unaLista = 'h' : 'o' : 'l' :  'a' : [] -- con el constructor
 
 -- Vieron que `:` va infijo, o sea se usa "entre" dos expresiones.
 -- Esto se llama función infija y son funciones definidas normalmente.
--- Por suerte Haskell ya nos da varias, como `+`, `<>`, etc.
+-- Para haskell, las funciones cuyo nombre no empiece con una letra van a ser
+-- infijas, como `+`, `:` o `<>`, mientras que las demás van a ser prefijas, como
+-- `calcularArea` o `seLlamaBobby`.
 
--- La librería standard de Haskell trae varias funciones para las mismas,
+-- La librería standard de Haskell trae varias funciones para trabajar con listas,
 -- podemos ver la documentación aqui:
 -- https://hackage.haskell.org/package/base-4.12.0.0/docs/Data-List.html
+-- También, en ghci podemos escribir `:browse Data.List` y nos va a mostrar todo lo que
+-- exporta ese módulo.
 -- Ahora repasemos algunas de sus operaciones mas comunes.
 --
 -- Podemos sumar listas
@@ -334,6 +338,10 @@ sumarCinco = sumar 5
 doce :: Int
 doce = sumarCinco 7
 
+-- Decimos que estamos haciendo aplicación parcial cuando le pasamos menos parámetros
+-- a una función de los que espera recibir. Hacer esto devuelve una función diferente
+-- (y con diferente tipo) que espera recibir los que no le pasamos a la primera.
+
 -- ***********************************************
 -- ****************** EJERCICIO 3 ****************
 -- ***********************************************
@@ -357,12 +365,12 @@ levelear = error "Escribime!"
 -- Para esto Haskell tiene un tipo especial llamado `IO a`, donde `a` es el tipo
 -- del resultado de evaluar y ejecutar esas acciones.
 --
--- Una ultima cosa, para "encadenar" acciones de IO tenemos que abrir un bloque `do`.
--- Para esto escribimos `do` y las subsecuentes lineas indentadas al mismo nivel.
+-- Una última cosa, para "encadenar" acciones de IO tenemos que abrir un bloque `do`.
+-- Para esto escribimos `do` y las subsecuentes líneas indentadas al mismo nivel.
 -- Todas estas lineas deben ser del tipo IO.
 
 --           +----- Esto significa que estamos haciendo IO
---           |  +-- () significa que no devolvemos nada, el tipo vacio
+--           |  +-- () significa que no devolvemos nada, el tipo vacío
 --           V  V
 helloWorld :: IO ()
 helloWorld = do
@@ -370,7 +378,7 @@ helloWorld = do
     putStrLn "so much functional wow"
 
 -- El bloque `do` secuencia ambas acciones por lo que si evaluamos esta función,
--- deberiamos ver ambas lineas impresas en pantalla.
+-- deberiamos ver ambas líneas impresas en pantalla.
 --
 -- Ahora obtengamos alguna entrada del usuario:
 
@@ -382,17 +390,17 @@ prompt = do
 
 -- Acá tenemos un simbolo nuevo: `<-`
 -- Esta flechita nos deja obtener el resultado de una acción IO,
--- de tal manera que si lo que esta a la derecha de la flecchita es `IO a`,
+-- de tal manera que si lo que está a la derecha de la flechita es `IO a`,
 -- lo que está a la izquierda es del tipo `a`.
 --
 -- El tipo de `getLine` es:
 --
 --     getLine :: IO String
 --
--- y cuando se ejecuta, toma una linea de entrada del usuario y devuelve esa String.
+-- y cuando se ejecuta, toma una línea de entrada del usuario y devuelve esa String.
 -- Con `<-` estamos "ligando" el String de la acción a la variable `line`.
 
--- La ultima linea de un bloque `do` debe tener el tipo que especificamos `IO a`,
+-- La última línea de un bloque `do` debe tener el tipo que especificamos `IO a`,
 -- o sea que si hubiesemos escrito esto:
 --
 --     prompt :: IO String
@@ -401,7 +409,7 @@ prompt = do
 --       line <- getLine
 --       line
 --
--- Tendriamos un error de tipo. Esto es porque `line` es tipo String,
+-- Tendríamos un error de tipo. Esto es porque `line` es tipo String,
 -- pero queremos `IO String`. Para esto tenemos la función `pure`
 -- que toma un valor de tipo `a` y lo "eleva" a un `IO a`.
 --
