@@ -6,10 +6,10 @@ Este archivo pretende dos cosas:
 
 
 # Import
-Todos los ejemplos que veamos en este archivo van a ser úso de bibliotecas externas, por lo que lo primero que tendremos que hacer es importarlas.
+Todos los ejemplos que veamos en este archivo van a ser uso de bibliotecas externas, por lo que lo primero que tendremos que hacer es importarlas.
 Existen muchos _sabores_ de como hacer esto, pero vamos a quedarnos con "unqualified imports".
 
-Haskell nos obliga a poner los imports como una de las primeras cosas en un archivo, de lo contrario nos dá un error gramatical:
+Haskell nos obliga a poner los imports como una de las primeras cosas en un archivo, de lo contrario nos da un error gramatical:
 `parse error on input ‘import’`
 
 
@@ -28,7 +28,7 @@ import           Data.List                      ( sort
 ```
 _[La documentación oficial de `Data.List`](http://hackage.haskell.org/package/base-4.11.1.0/docs/Data-List.html)_
 
-Ahora que está importada, podemos hacer uso:
+Ahora que está importada, podemos hacer uso de ella:
 ```haskell
 reverse (sort [3, 1, 2]) -- [3,2,1]
 ```
@@ -42,7 +42,7 @@ https://www.stackage.org/haddock/lts-12.4/text-1.2.3.0/Data-Text.html
 En muchos lenguajes, existe el concepto de "string", como una cadena de caracteres. Haskell no es tan diferente al resto, y tiene el tipo de dato `String`.
 En Haskell, `String` está definido como: `[Char]`.
 
-Sin embargo, por cuestiones de la vida, `String` es altamente ineficiente, tanto en velocidad de cómputo, como en espacio. Esto, combinado con qué Haskell es un lenguaje fuertemente tipado, nos fuerza a tener diferentes tipos para representar _""lo mismo""_ (una cadena de caracteres).
+Sin embargo, por cuestiones de la vida, `String` es altamente ineficiente, tanto en velocidad de cómputo, como en espacio. Esto, combinado con que Haskell es un lenguaje fuertemente tipado, nos fuerza a tener diferentes tipos para representar _""lo mismo""_ (una cadena de caracteres).
 
 Muchas de las bibliotecas que hacen tareas pesadas con texto, van a optar por usar `Text` antes que usar su contraparte ineficiente `String`.
 
@@ -54,7 +54,7 @@ Como tanto `String` como `Text` representa la misma idea, tenemos dos funciones 
 pack :: String -> Text
 unpack :: Text -> String
 ```
-Es tan común que no queramos usar `String` en nuestro código, que hay un ["Pragma"](https://wiki.haskell.org/Language_Pragmas) que hace que `String` sea polimorficos con otras cosas, en particular la que nos interesa: `Text`: `OverloadedStrings`.
+Es tan común que no queramos usar `String` en nuestro código, que hay un ["Pragma"](https://wiki.haskell.org/Language_Pragmas) que hace que `String` sea polimórfico con otras cosas, en particular la que nos interesa: `Text`: `OverloadedStrings`.
 Así y todo posiblemente queramos importar el tipo de dato `Text`:
 ```haskell
 import           Data.Text               (Text)
@@ -73,16 +73,16 @@ Posiblemente la más rica de las bibliotecas que vayamos a usar, pero para este 
 ### Usos
 #### Transformar de `JSON` a Haskell
 Misma idea que vimos con `Text`, vamos a tener una forma de transformar de `JSON` a un valor y visceversa, pero esta vez es un poquito más complejo.
-La idea de `aeson` es que algo es transformable de `JSON` si nuestro tipo de instancia de la typeclass `FromJSON` _(pss, este es el código que vimos arriba en `Http`)_.
+La idea de `aeson` es que algo es transformable de `JSON` si nuestro tipo tiene definida una instancia de la typeclass `FromJSON` _(pss, este es el código que vimos arriba en `Http`)_.
 
-Imaginemosnos que tenemos el tipo de dato:
+Imaginémosnos que tenemos el tipo de dato:
 ```haskell
 data Actriz = Actriz
   { nombre :: String
   , cumpleaños :: String
   }
 ```
-y tenemos un endpoint que nos dá este JSON:
+y tenemos un endpoint que nos da este JSON:
 ```JSON
 {
   "birthday": "1968-07-07",
@@ -142,7 +142,7 @@ objeto .: "foo"
 
 Toda esta biblioteca se encarga de manejar los errores cuando las claves no están, o no son del tipo que querríamos en nuestro tipo; todo con muy poco código.
 
-Muchas veces queremos obtener más de una clave de un JSON, y combinarlo con otras claves (como era nuestro ejemplo original). Por suerte `Parser` es una `monada` y está programada para poder ser combinada, por lo que podemos escribir:
+Muchas veces queremos obtener más de una clave de un JSON, y combinarlo con otras claves (como era nuestro ejemplo original). Por suerte `Parser`, al igual que `IO` que vimos antes, es una `monada` y está programada para poder ser combinada, por lo que podemos escribir:
 ```haskell
 jsonAActriz objeto = do
   nombre_     <- objeto .: "name"
