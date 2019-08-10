@@ -32,6 +32,14 @@ stack run recomendar 917
 
 nos imprima las recomendaciones para la peli con ID `917`.
 
+### API key
+
+Para usar la API necesitamos una API key
+
+```
+api_key = "2ba61b38c35668c26d754910aac7a729"
+```
+
 ## Preparación
 
 ### Requisitos
