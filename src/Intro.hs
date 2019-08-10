@@ -432,5 +432,5 @@ crearMascota = error "implementame"
 -- *************** FIN EJERCICIO 4 ***************
 -- ***********************************************
 
--- Suficiente introducción por ahora.
+-- Suficiente introducción.
 -- ¡Ahora veamos el ejercicio!

@@ -62,30 +62,6 @@ import           Data.Text               (Text)
 
 **Regla de oro**: Pongamos `{-# LANGUAGE OverloadedStrings #-}` como primera línea de nuestro archivo, y usemos `Text` indiscriminadamente! 🎉
 
-## `Http`
-### Descripción
-Hacer pedidos por `HTTP` tiene varias intricaciones. Saber el schema (`http`/`https`), poder interpretar la URL o qué hacer cuando no. El verbo con el que queramos acceder (`GET`/`POST`/etc), si queremos pasarle un cuerpo al pedido, y tantas otras cosas. Todo esto es altamente interesante, pero les queríamos facilitar una _biblioteca_ nuestra que simplifica inmensamente todo esto _(y es sumamente limitada en lo que puede hacer)_.
-
-### Documentación
-El código está en el archivo `src/Http.hs`.
-
-### Usos
-La biblioteca tiene solo una función: `get`, que dada una URL, hace un `GET` pedido a esta.
-
-#### GET
-```haskell
-get :: FromJSON response => Text -> IO response
-```
-_(`FromJSON` es de la próxima biblioteca: `aeson`)_
-
-Por ejemplo, si tuviésemos un `data Persona = Persona { nombre :: Text, direccion :: Text }` y hubiese una página a la que si le hiciecemos `GET` a `http://www.personas.com/Pepe` nos devolviese un `JSON` que pueda _matchear_ con nuestro tipo `Persona`, entonces podríamos escribir:
-```haskell
-data Persona = ...
-
-getPersona :: Text => IO Persona
-getPersona nombre = get ("http://www.personas.com/" <> nombre)
-```
-
 ## `aeson`
 ### Documentación
 https://www.stackage.org/haddock/lts-12.4/aeson-1.3.1.1/Data-Aeson.html
@@ -191,15 +167,12 @@ data Actriz = Actriz
   , cumpleaños :: String
   }
 
-jsonAActriz :: Object -> Parser Actriz
-jsonAActriz objeto = do
-  nombre_     <- objeto .: "name"
-  cumpleaños_ <- objeto .: "birthday"
-  pure (Actriz nombre_ cumpleaños_)
-
 instance FromJSON Actriz where
-  parseJSON (Object actrizJSON) = jsonAActriz actrizJSON
-  parseJSON _                   = fail "no pude interpretar el objeto"
+  parseJSON (Object objeto) = do
+      nombre_     <- objeto .: "name"
+      cumpleaños_ <- objeto .: "birthday"
+      pure (Actriz nombre_ cumpleaños_)
+  parseJSON _ = fail "no pude interpretar el objeto"
 ```
 
 #### Otra forma (`Aplicative`)
@@ -226,3 +199,32 @@ data Actriz = Actriz
   } deriving (Generic)
 ```
 Qué lindo que es Haskell.
+
+## `Http`
+### Descripción
+Hacer pedidos por `HTTP` tiene varias intricaciones. Saber el schema (`http`/`https`), poder interpretar la URL o qué hacer cuando no. El verbo con el que queramos acceder (`GET`/`POST`/etc), si queremos pasarle un cuerpo al pedido, y tantas otras cosas. Todo esto es altamente interesante, pero les queríamos facilitar una _biblioteca_ nuestra que simplifica inmensamente todo esto _(y es sumamente limitada en lo que puede hacer)_.
+
+### Documentación
+El código está en el archivo `src/Http.hs`.
+
+### Usos
+La biblioteca tiene solo una función: `get`, que dada una URL, hace un `GET` pedido a esta.
+
+#### GET
+```haskell
+get :: FromJSON response => Text -> IO response
+```
+_(`FromJSON` es de `aeson`)_
+
+Por ejemplo, si tuviésemos un tipo `Persona` y hubiese una página a la que si le hiciecemos `GET` a `http://www.personas.com/Pepe` nos devolviese un `JSON` que pueda _matchear_ con nuestro tipo `Persona`, entonces podríamos escribir:
+
+```haskell
+data Persona = Persona
+ { nombre :: Text
+ , direccion :: Text }
+
+instance FromJSON Persona
+
+getPersona :: Text => IO Persona
+getPersona nombre = get ("http://www.personas.com/" <> nombre)
+```
