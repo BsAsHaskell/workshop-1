@@ -335,10 +335,10 @@ seLlamaBobby _ = False
 -- El ejercicio consiste de hacer que Jugador implemente `Ord` y `Eq` pero solo comparando su poder.
 
 instance Eq Jugador where
-  j1 == j2 = jugadorNivel j1 == jugadorNivel j2
+  j1 == j2 = error "Escribime!"
 
 instance Ord Jugador where
-  j1 <= j2 = jugadorNivel j1 <= jugadorNivel j2
+  j1 <= j2 = error "Escribime!"
 
 jugadoresOrdenados = sort [Jugador "Paulina" 9, Jugador "Marilinia" 2, Jugador "Pepe" 5, Jugador "Paulina" 3]
 

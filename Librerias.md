@@ -34,34 +34,6 @@ reverse (sort [3, 1, 2]) -- [3,2,1]
 ```
 
 # Ahora si
-## `text`
-### Documentación
-https://www.stackage.org/haddock/lts-12.4/text-1.2.3.0/Data-Text.html
-
-### Descripción
-En muchos lenguajes, existe el concepto de "string", como una cadena de caracteres. Haskell no es tan diferente al resto, y tiene el tipo de dato `String`.
-En Haskell, `String` está definido como: `[Char]`.
-
-Sin embargo, por cuestiones de la vida, `String` es altamente ineficiente, tanto en velocidad de cómputo, como en espacio. Esto, combinado con que Haskell es un lenguaje fuertemente tipado, nos fuerza a tener diferentes tipos para representar _""lo mismo""_ (una cadena de caracteres).
-
-Muchas de las bibliotecas que hacen tareas pesadas con texto, van a optar por usar `Text` antes que usar su contraparte ineficiente `String`.
-
-### Usos
-#### Crear `Text`s
-Como tanto `String` como `Text` representa la misma idea, tenemos dos funciones muy simples para transformar de uno al otro:
-
-```haskell
-pack :: String -> Text
-unpack :: Text -> String
-```
-Es tan común que no queramos usar `String` en nuestro código, que hay un ["Pragma"](https://wiki.haskell.org/Language_Pragmas) que hace que `String` sea polimórfico con otras cosas, en particular la que nos interesa: `Text`: `OverloadedStrings`.
-Así y todo posiblemente queramos importar el tipo de dato `Text`:
-```haskell
-import           Data.Text               (Text)
-```
-
-**Regla de oro**: Pongamos `{-# LANGUAGE OverloadedStrings #-}` como primera línea de nuestro archivo, y usemos `Text` indiscriminadamente! 🎉
-
 ## `aeson`
 ### Documentación
 https://www.stackage.org/haddock/lts-12.4/aeson-1.3.1.1/Data-Aeson.html
@@ -72,7 +44,6 @@ Posiblemente la más rica de las bibliotecas que vayamos a usar, pero para este 
 
 ### Usos
 #### Transformar de `JSON` a Haskell
-Misma idea que vimos con `Text`, vamos a tener una forma de transformar de `JSON` a un valor y visceversa, pero esta vez es un poquito más complejo.
 La idea de `aeson` es que algo es transformable de `JSON` si nuestro tipo tiene definida una instancia de la typeclass `FromJSON` _(pss, este es el código que vimos arriba en `Http`)_.
 
 Imaginémosnos que tenemos el tipo de dato:
@@ -80,7 +51,7 @@ Imaginémosnos que tenemos el tipo de dato:
 data Actriz = Actriz
   { nombre :: String
   , cumpleaños :: String
-  }
+  } deriving (Show)
 ```
 y tenemos un endpoint que nos da este JSON:
 ```JSON
@@ -121,7 +92,7 @@ _(el tipo `Actriz` está parametrizado por la instancia de `FromJSON` que vimos 
 Por un lado tenemos [`Value`](https://www.stackage.org/haddock/lts-12.4/aeson-1.3.1.1/Data-Aeson.html#t:Value). Esta es la forma de `aeson` de decir "algo que se parezca a un JSON". Puede ser un string, un objeto (si empieza con `{`, le diremos `Object`), una lista (si empieza con `[`, le diremos `Array`), etc.
 Por el otro necesitamos un `Parser` de `Actriz`. Para construir este parser `aeson` nos brinda una miríada de funciones. En particular la que más nos interesa es:
 ```haskell
-(.:) :: FromJSON a => Object -> Text -> Parser a 
+(.:) :: FromJSON a => Object -> Text -> Parser a
 ```
 _(notar que `.:` es una función infija. A diferencias de `pack` o `sort`, que van adelante de los argumentos, `.:` va **entre** los argumentos)_
 
@@ -165,7 +136,7 @@ Una ver que ponemos todo junto:
 data Actriz = Actriz
   { nombre :: String
   , cumpleaños :: String
-  }
+  } deriving (Show)
 
 instance FromJSON Actriz where
   parseJSON (Object objeto) = do
@@ -175,19 +146,7 @@ instance FromJSON Actriz where
   parseJSON _ = fail "no pude interpretar el objeto"
 ```
 
-#### Otra forma (`Aplicative`)
-`aeson` en su infinita gloria, también nos deja escribir lo mismo pero un poquito más corto, con unos _chirimbolos locos_:
-
-```haskell
-jsonAActriz objeto =
-    Actriz
-       <$> objeto .: "name"
-       <*> objeto .: "birthday"
-```
-
-Este código construye una Actriz con 2 parametros, el primero (nombre) es el valor de la clave `"name"` del JSON y el segundo (cumpleaños) es el valor de la clave `"birthday"` del JSON.
-
-#### OOOOOOtra forma (`deriving`)
+#### Otra forma: `deriving`
 Esta vez vamos a hacer 🙌 al compilador de Haskell quien puede inferir mucho de esto, si hacemos que nuestro `Data` tenga los mismos nombres que los atributos del JSON y _derivar_.
 
 Para esto necesitamos agregar el Pragma: `DeriveGeneric` _(agregar `{-# LANGUAGE DeriveGeneric #-}` como primera línea de nuestro `.hs`)_ y cambiar nuestro `data` así:
@@ -196,8 +155,11 @@ Para esto necesitamos agregar el Pragma: `DeriveGeneric` _(agregar `{-# LANGUAGE
 data Actriz = Actriz
   { name :: String
   , birthday :: String
-  } deriving (Generic)
+  } deriving (Show, Generic)
+
+instance FromJSON Actriz
 ```
+
 Qué lindo que es Haskell.
 
 ## `Http`
@@ -212,7 +174,7 @@ La biblioteca tiene solo una función: `get`, que dada una URL, hace un `GET` pe
 
 #### GET
 ```haskell
-get :: FromJSON response => Text -> IO response
+get :: FromJSON response => String -> IO response
 ```
 _(`FromJSON` es de `aeson`)_
 
@@ -220,11 +182,11 @@ Por ejemplo, si tuviésemos un tipo `Persona` y hubiese una página a la que si 
 
 ```haskell
 data Persona = Persona
- { nombre :: Text
- , direccion :: Text }
+ { nombre    :: String
+ , direccion :: String }
 
 instance FromJSON Persona
 
-getPersona :: Text => IO Persona
+getPersona :: String => IO Persona
 getPersona nombre = get ("http://www.personas.com/" <> nombre)
 ```

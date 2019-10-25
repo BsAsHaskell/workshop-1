@@ -98,6 +98,81 @@ stack build intero --copy-compiler-tool
 
 Finalmente, en Visual Studio Code instalás el plugin **Haskero** y listo!
 
+## Intro
+
+Vamos a aprender lo básico de Haskell siguiendo el archivo [src/Intro.hs](src/Intro.hs).
+
+## Cliente
+
+Vamos a implementar una aplicación de terminal que consulte la API de TheMovieDB.
+
+### 1. Buscar una persona desde un ID harcodeado
+
+Queremos que si hacemos:
+
+```bash
+stack run
+```
+
+Nos traiga la persona con ID 54693 e imprima en la consola su
+nombre y fecha de nacimiento.
+
+Podemos usar el código que hay en [Librerias.md](Librerias.md)
+para el data type `Actriz`.
+
+### 2. Buscar una persona desde un ID por argumento
+
+Queremos que si hacemos:
+
+```bash
+stack run 1
+```
+
+Nos traiga la persona con ID 1 e imprima lo mismo que antes.
+
+La función de Haskell para obtener los argumentos de consola
+es `getArgs` y se consigue importando `System.Environment`.
+
+### 3. Buscar una pelicula desde un ID por argumento
+
+Queremos que si hacemos:
+
+```bash
+stack run pelicula 1
+```
+
+Nos traiga la pelicula con ID 1 e imprima su titulo y descripción.
+
+¡Ojo! Hay que modificar el comando para que si hacemos
+
+```bash
+stack run persona 1
+```
+
+siga andando como antes.
+
+### 4. Mostrar estos tipos con un Show copado
+
+Hasta ahora estamos usando el `Show` por defecto que nos genera Haskell.
+Ahora queremos implementar uno nosotros.
+
+Por ejemplo:
+
+```haskell
+instance Show Actriz where
+  show actriz = ...
+```
+
+### 5. Buscar películas
+
+Queremos que si hacemos:
+
+```bash
+stack run buscar "back to the future"
+```
+
+Nos imprima los títulos y la descripción de cada resultado en la pantalla.
+
 ## Después del taller
 
 Si te gustó y queres seguir aprendiendo, te dejamos unos links:
