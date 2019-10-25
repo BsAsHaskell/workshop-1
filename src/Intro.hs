@@ -375,7 +375,7 @@ helloWorld = do
 -- El bloque `do` secuencia ambas acciones por lo que si evaluamos esta función,
 -- deberiamos ver ambas líneas impresas en pantalla.
 --
--- Ahora obtengamos alguna entrada del usuario:
+-- Ahora obtengamos alguna entrada de una persona:
 
 prompt :: IO String
 prompt = do
@@ -392,7 +392,7 @@ prompt = do
 --
 --     getLine :: IO String
 --
--- y cuando se ejecuta, toma una línea de entrada del usuario y devuelve esa String.
+-- y cuando se ejecuta, lee línea de entrada y la devuelve como String.
 -- Con `<-` estamos "ligando" el String de la acción a la variable `line`.
 
 -- La última línea de un bloque `do` debe tener el tipo que especificamos `IO a`,
@@ -418,7 +418,7 @@ customPrompt string = do
     putStr "> "
     getLine
 
--- También, podemos dentro de un bloque de IO usar funciones puras (que no
+-- También, dentro de un bloque de IO podemos usar funciones puras (que no
 -- tienen IO) u otras funciones de IO que nosotros mismos hayamos definido.
 -- Por ejemplo:
 
@@ -441,23 +441,26 @@ saludar = do
 saludoConEmocion :: String -> String
 saludoConEmocion nombre = saludo nombre <> "!!!!"
 
--- Finalmente, los valores que ingresa el usuario los estamos leyendo como
--- strings con las función getLine, pero nada nos impide que convirtamos
+-- Finalmente, los valores que ingresa la persona los estamos leyendo como
+-- strings con la función getLine, pero nada nos impide que transformemos
 -- esos valores en valores de otros tipos:
 
 -- Dada está función que convierte un String en un Float
+-- (no nos importa como está implementada)
 
 stringToFloat :: String -> Float
 stringToFloat numeroComoString = read numeroComoString
 
--- Podemos escribir nuestro propia función que devuelva Floats:
+-- Podemos escribir nuestro propia función análoga a getLine pero
+-- que devuelve Floats:
 
 getFloat :: IO Float
 getFloat = do
     numeroComoString <- getLine
     pure (stringToFloat numeroComoString)
 
--- Y ahora que tenemos getFloat podemos escribir cosas más copadas como:
+-- Y ahora que tenemos getFloat podemos hacer operaciones numéricas sobre
+-- lo que nos pasa quien usa la función, como:
 
 multiplicameDosNumeros :: IO ()
 multiplicameDosNumeros = do
@@ -475,18 +478,18 @@ multiplicameDosNumeros = do
 -- En este ejercicio vamos a juntar varias cosas de las que estuvimos viendo.
 -- El objetivo final va a ser escribir una funcion IO que sirva para calcular
 -- el area de las diferentes figuras que modelamos. De manera que podamos
--- correrlo y tener una interacción como la siguiente:
+-- correr la función y tener una interacción como la siguiente:
 
--- De que figura queres calcular el area?:
+-- ¿Qué figura querés?:
 -- > cuadrado
--- Cual es la base?:
+-- ¿Cuál es la base?:
 -- > 5
--- Cual es la altura?:
+-- ¿Cuál es la altura?:
 -- > 10
--- El area del cuadrado es: 500
+-- El área es: 500
 
 -- Para empezar, vamos a hacer un par de funciones de IO que nos devuelvan
--- un circulo y un cuadrado respectivamente usando input del usuario:
+-- un círculo y un cuadrado respectivamente usando input de la persona:
 
 -- De la primera les dejamos el tipo ya escrito:
 getCirculo :: IO Figura
@@ -494,20 +497,18 @@ getCirculo = error "Escribime!"
 
 -- Lo que debería pasar cuando corra esa función es lo siguiente:
 
--- El interprete debería escribir lo siguiente por pantalla y esperar mi
--- input
+-- El interprete debería pedirme el radio del círculo por pantalla y esperar
+-- que yo se lo pase
 
 -- Cual es el radio?:
 -- > 20
 
--- Y una vez obtenido eso debería devolver un Círculo.
+-- Una vez obtenido el valor, debería devolver un Círculo.
 -- Si Figura no tiene definida una instancia de Show la función no
 -- va a imprimir nada, pero si le escribimos deriving Show al final
--- de la definición de Figura, debería también imprimir algo como:
+-- de la definición de Figura debería también imprimir:
 
 -- Circulo 20.0
-
--- Luego de que le pasemos el input.
 
 -- -------------------------------------------------------------------------
 -- Ahora hagamos lo mismo para obtener cuadrados. 
@@ -516,9 +517,9 @@ getCirculo = error "Escribime!"
 
 getCuadrado = error "Escribime!"
 
--- Lo siguiente que podemos hacer es una función que le pregunte al usuario
--- que tipo de figura quiere ingresar, y que luego dependiendo de lo que
--- haya escrito, reutilice lo que ya escribimos.
+-- Lo siguiente que podemos hacer es una función que le pregunte a quien
+-- corrió la función qué tipo de figura quiere ingresar y que luego,
+-- dependiendo de lo que haya escrito, reutilice lo que ya escribimos.
 
 getFigura = error "Escribime!"
 
@@ -532,7 +533,7 @@ getFigura = error "Escribime!"
 -- Esta función de IO debería terminar devolviendo la figura correspondiente.
 
 -- Con todo esto ya tendríamos todo el código para obtener figuras ingresadas
--- por el usuario!, lo que nos falta es calcular su área e imprimirla
+-- por una persona!, lo que nos falta es calcular su área e imprimirla
 -- por pantalla.
 
 -- Para esto podemos reusar la función calcularArea que habíamos definido
