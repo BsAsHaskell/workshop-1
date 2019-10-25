@@ -418,9 +418,33 @@ prompt = do
 
 customPrompt :: String -> IO String
 customPrompt string = do
-    let promptStr = string ++ "> "
-    putStrLn promptStr
+    let prompt = string ++ ": "
+    putStrLn prompt
+    putStr "> "
     getLine
+
+-- También, podemos dentro de un bloque de IO usar funciones puras (que no
+-- tienen IO) u otras funciones de IO que nosotros mismos hayamos definido.
+-- Por ejemplo:
+
+saludo :: String -> String
+saludo nombre = "Holis, " ++ nombre
+
+saludar :: IO ()
+saludar = do
+    nombre <- customPrompt "Como te llamas?"
+    -- Acá usamos customPrompt, una función impura que definimos más arriba
+    putStrLn (saludo nombre)
+    -- Y acá podemos reusar saludo en vez de tener que escribir toda la lógica
+    -- de nuevo
+
+-- El beneficio de hacer funciones como saludo en vez de poner todo
+-- en el bloque de IO, es que estas funciones puras son más fáciles de
+-- testear por su cuenta y se pueden volver a usar en las definiciones
+-- de otras funciones puras:
+
+saludoConEmocion :: String -> String
+saludoConEmocion nombre = saludo nombre ++ "!!!!"
 
 -- ***********************************************
 -- ****************** EJERCICIO 4 ****************
