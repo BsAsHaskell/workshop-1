@@ -418,8 +418,8 @@ prompt = do
 
 customPrompt :: String -> IO String
 customPrompt string = do
-    let prompt = string ++ ": "
-    putStrLn prompt
+    let promptPersonalizado = string ++ ": "
+    putStrLn promptPersonalizado
     putStr "> "
     getLine
 
@@ -445,6 +445,33 @@ saludar = do
 
 saludoConEmocion :: String -> String
 saludoConEmocion nombre = saludo nombre ++ "!!!!"
+
+-- Finalmente, los valores que ingresa el usuario los estamos leyendo como
+-- strings con las función getLine, pero nada nos impide que convirtamos
+-- esos valores en valores de otros tipos:
+
+-- Dada está función que convierte un String en un Float
+
+stringToFloat :: String -> Float
+stringToFloat numeroComoString = read numeroComoString
+
+-- Podemos escribir nuestro propia función que devuelva Floats:
+
+getFloat :: IO Float
+getFloat = do
+    numeroComoString <- getLine
+    pure (stringToFloat numeroComoString)
+
+-- Y ahora que tenemos getFloat podemos escribir cosas más copadas como:
+
+multiplicameDosNumeros :: IO ()
+multiplicameDosNumeros = do
+    putStrLn "Ingresa el primer numero:"
+    primerNumero <- getFloat
+    putStrLn "Ingresa el segundo numero:"
+    segundoNumero <- getFloat
+    let resultado = primerNumero * segundoNumero
+    putStrLn ("El resultado es: " ++ show resultado)
 
 -- ***********************************************
 -- ****************** EJERCICIO 4 ****************
