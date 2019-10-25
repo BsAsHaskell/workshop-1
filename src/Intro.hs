@@ -418,7 +418,7 @@ prompt = do
 
 customPrompt :: String -> IO String
 customPrompt string = do
-    let promptPersonalizado = string ++ ": "
+    let promptPersonalizado = string <> ": "
     putStrLn promptPersonalizado
     putStr "> "
     getLine
@@ -428,7 +428,7 @@ customPrompt string = do
 -- Por ejemplo:
 
 saludo :: String -> String
-saludo nombre = "Holis, " ++ nombre
+saludo nombre = "Holis, " <> nombre
 
 saludar :: IO ()
 saludar = do
@@ -444,7 +444,7 @@ saludar = do
 -- de otras funciones puras:
 
 saludoConEmocion :: String -> String
-saludoConEmocion nombre = saludo nombre ++ "!!!!"
+saludoConEmocion nombre = saludo nombre <> "!!!!"
 
 -- Finalmente, los valores que ingresa el usuario los estamos leyendo como
 -- strings con las función getLine, pero nada nos impide que convirtamos
@@ -471,21 +471,85 @@ multiplicameDosNumeros = do
     putStrLn "Ingresa el segundo numero:"
     segundoNumero <- getFloat
     let resultado = primerNumero * segundoNumero
-    putStrLn ("El resultado es: " ++ show resultado)
+    putStrLn ("El resultado es: " <> show resultado)
 
 -- ***********************************************
 -- ****************** EJERCICIO 4 ****************
 -- ***********************************************
 
 -- En este ejercicio vamos a juntar varias cosas de las que estuvimos viendo.
--- Queremos hacer una función que le pregunte al usuario por el nombre de una mascota,
--- y que según el nombre ingresado devuelva un perro o un gato.
--- Si el nombre es 'garfield', 'salem' o 'bola de nieve II',
--- devuelve un Gato, si no, devuelve un Perro cuya edad es la cantidad de caracteres del nombre
--- (un String es lo mismo que [Char])
+-- El objetivo final va a ser escribir una funcion IO que sirva para calcular
+-- el area de las diferentes figuras que modelamos. De manera que podamos
+-- correrlo y tener una interacción como la siguiente:
 
-crearMascota :: IO Animal
-crearMascota = error "implementame"
+-- De que figura queres calcular el area?:
+-- > cuadrado
+-- Cual es la base?:
+-- > 5
+-- Cual es la altura?:
+-- > 10
+-- El area del cuadrado es: 500
+
+-- Para empezar, vamos a hacer un par de funciones de IO que nos devuelvan
+-- un circulo y un cuadrado respectivamente usando input del usuario:
+
+-- De la primera les dejamos el tipo ya escrito:
+getCirculo :: IO Figura
+getCirculo = error "Escribime!"
+
+-- Lo que debería pasar cuando corra esa función es lo siguiente:
+
+-- El interprete debería escribir lo siguiente por pantalla y esperar mi
+-- input
+
+-- Cual es el radio?:
+-- > 20
+
+-- Y una vez obtenido eso debería devolver un Círculo.
+-- Si Figura no tiene definida una instancia de Show la función no
+-- va a imprimir nada, pero si le escribimos deriving Show al final
+-- de la definición de Figura, debería también imprimir algo como:
+
+-- Circulo 20.0
+
+-- Luego de que le pasemos el input.
+
+-- -------------------------------------------------------------------------
+-- Ahora hagamos lo mismo para obtener cuadrados. 
+-- En este caso nos debería pedir la base y la altura.
+-- Acá te toca a vos escribir el tipo aparte de la implementación.
+
+getCuadrado = error "Escribime!"
+
+-- Lo siguiente que podemos hacer es una función que le pregunte al usuario
+-- que tipo de figura quiere ingresar, y que luego dependiendo de lo que
+-- haya escrito, reutilice lo que ya escribimos.
+
+getFigura = error "Escribime!"
+
+-- La idea sería que al correr getFigura pase lo siguiente:
+
+-- Que figura queres?
+-- > 
+
+-- Si ingresamos cuadrado, nos debería preguntar la base y la altura
+-- como en getCuadrado; y si ingresamos circulo, nos debería pedir el radio.
+-- Esta función de IO debería terminar devolviendo la figura correspondiente.
+
+-- Con todo esto ya tendríamos todo el código para obtener figuras ingresadas
+-- por el usuario!, lo que nos falta es calcular su área e imprimirla
+-- por pantalla.
+
+-- Para esto podemos reusar la función calcularArea que habíamos definido
+-- bastante más arriba y la función getFigura que acabamos de implementar.
+
+calcularAreaDeFigura = error "Escribime!"
+
+-- Esta última función es la que debería hacer todo lo que escribimos al
+-- inicio del ejercicio:
+-- Pedirnos que tipo de figura queremos ingresar
+-- Hacernos las preguntas necesarias para construir la figura
+-- calcular su área e imprimirla por pantalla.
 
 -- ***********************************************
 -- *************** FIN EJERCICIO 4 ***************
