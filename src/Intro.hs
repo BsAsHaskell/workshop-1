@@ -20,6 +20,30 @@ module Intro where
 -- Eso significa que las declaraciones deben arrancar en la columna 0,
 -- y cualquier linea puede partirse siempre y cuando se indente un poco mas que la anterior.
 
+import Data.List (sort)
+
+-- Acá importamos la función `sort` del módulo Data.List.
+-- Hay muchas maneras de importar cosas, pero por ahora vamos a ignorar todas.
+
+
+---------------------------------------------------------------------------
+--                        Consola interactiva                            --
+---------------------------------------------------------------------------
+
+-- Antes que nada, vamos a abrir una consola de GHCi, el interprete dinámico que Haskell
+-- nos ofrece para poder probar cosas. Esto lo hacemos con:
+--
+-- > stack ghci src/Intro.hs
+--
+-- Acá podemos probar cosas sencillas como `4 + 6` o "hola que tal".
+--
+-- Aparte, podemos ver el tipo de una expresión con `:t` así
+-- (`[Char]` es lo mismo que `String`):
+--
+-- > :t "holis"
+-- > "holis" :: [Char]
+
+
 -- Siendo Haskell un lenguaje con tipado estático, uno de los principales elementos que vamos
 -- a definir son, justamente, tipos.
 
@@ -30,12 +54,15 @@ module Intro where
 -- En otro lenguajes `=` suele significar asignación.
 -- En Haskell, `=` significa "está definido así".
 
---   +--------------------------- Nombre del *tipo*
---   |         +----------------- Nombre del *constructor*
---   |         |       +--------- Toma una `String`
---   |         |       |      +-- Y toma un `Int`
---   V         V       V      V
-data Persona = Persona String Int
+--   +------------------------------- Nombre del *tipo*
+--   |         +--------------------- Nombre del *constructor*
+--   |         |       +------------- Toma una `String`
+--   |         |       |      +------ Y toma un `Int`
+--   |         |       |      |
+--   |         |       |      |   +-- Además, el tipo es "mostrable" (lo vemos depués)
+--   |         |       |      |   |
+--   V         V       V      V   V
+data Persona = Persona String Int deriving (Show)
 
 -- Usamos `data` para definir un nuevo tipo de datos.
 -- Todos los tipos deben empezar con mayúscula, y el nombre de este tipo es `Persona`.
@@ -56,7 +83,7 @@ maria = Persona "Maria" 32
 --   |      |         |     | +------------ Otro constructor
 --   |      |         |     | |        +--- Argumentos del segundo constructor
 --   V      V         V     V V        V
-data Figura = Circulo Float | Cuadrado Float Float
+data Figura = Circulo Float | Cuadrado Float Float deriving (Show)
 
 -- Este ejemplo define un tipo `Figura` con dos constructores,
 -- cada uno con distinta cantidad de argumentos.
@@ -78,6 +105,17 @@ data Figura = Circulo Float | Cuadrado Float Float
 data Animal = Perro String Int | Gato String
   deriving (Eq, Ord, Show)
 
+gatitou1 = Gato "miau1"
+gatitou2 = Gato "miau2"
+
+gatitou1_es_menor_que_gatitou2 = gatitou1 < gatitou2
+
+gatitou1_es_igual_que_gatitou2 = gatitou1 == gatitou2
+
+-- Si lo evaluamos en GHCi, vamos a ver que `gatito1_es_menor_que_gatitou2` es `True`
+-- y `gatitou1_es_igual_que_gatitou2` es `False
+
+
 -- ***********************************************
 -- ****************** EJERCICIO 1 ****************
 -- ***********************************************
@@ -85,8 +123,9 @@ data Animal = Perro String Int | Gato String
 -- Abrí en la consola de Haskell este archibo con `stack ghci src/Intro.hs`.
 -- Ahora definí un animal y una persona en la consola.
 -- > persona1 = Persona "nombre" 5
--- Fijate como podés imprimir al animal y no a la persona.
+-- > perrito = Perro "bobby" 7
 -- ¿Cuál es mas grande, un perro llamado "bobby" de 7 años o un gato llamado "pepita"?
+-- ¿Y dos perros con se llaman igual pero uno es mas grande?
 --
 -- ***********************************************
 -- **************** FIN EJERCICIO 1 **************
@@ -122,10 +161,16 @@ nivelDeJugador1 = jugadorNivel jugador1
 --   |        |   |     | +----- "o"
 --   |        |   |     | | +--- Un constructor sin argumentos
 --   V        V   V     V V V
-data Opcional a = Algun a | Nada
+data Opcional a = Algun a | Nada deriving (Show)
 
 -- Este tipo por ejemplo sería como el `Optional<T>` en Java,
 -- puede "tener: un valor de tipo `a` o estar vacío.
+
+unNumero = Algun 5
+
+ningunString = Nada
+
+-- ¿Cuál es el tipo de `unNumero`? ¿Y el de `ningunString`?
 
 
 ---------------------------------------------------------------------------
@@ -140,7 +185,7 @@ vegeta = Persona "Vegeta" 9000
 -- Si ponemos dos cosas juntas (o sea, separadas por un espacio),
 -- Haskell va a intentar "aplicar" los valores de izquierda a derecha.
 -- En este caso, como `Persona` es el constructor de tipo y es una función,
--- le va a aplicar la String "Vegeta" y el Int 9001.
+-- le va a aplicar la String "Vegeta" y el Int 9000.
 
 -- También podemos anotar un valor con el tipo:
 
@@ -189,6 +234,7 @@ powerUp (Persona nombre poder) = Persona nombre (poder + 1)
 -- ***********************************************
 -- ¿Cómo obtendrías el nombre de una Persona?
 -- ¿Y su edad?
+-- ¿Cual es el poder de `goku` después de que le aplicamos `powerUp`?
 -- Tip: en ghci (la consola de Haskell) podes ver el tipo de algo con:
 -- > :t algo
 
@@ -202,17 +248,18 @@ getPoder = error "Escribime!"
 -- **************** FIN EJERCICIO 2 **************
 -- ***********************************************
 
--- Las funciones que toman múltiples argumentos usan la misma flecha,
+-- El tipo de las funciones que toman multiples argumentos usan la misma flecha,
 -- siendo la última cosa lo que devuelve la función.
--- Esta función absorbe el poder de una persona. El guión bajo en la segunda
--- persona significa "no voy a usar este valor" y no les asignamos una variable.
+-- Esta función absorbe el poder de una persona y se lo asigna a uno mismo.
+-- El guión bajo en el segundo patrón significa "no voy a usar este valor"
+-- y así no lo asignamos a una variable (total no lo necesitamos).
 
 absorber :: Persona -> Persona -> Persona
 absorber (Persona nombre poderAnterior) (Persona _ otroPoder) =
     Persona nombre (poderAnterior + otroPoder)
 
--- ¡Atención! ¿Qué pasa con la persona que le absorbimos el poder?
--- ¿No tendríamos que volverlo a 0? Como Haskell es inmutable no podemos
+-- ¡Atención! ¿Qué pasa con la persona que le absorvimos el poder?
+-- ¿No tendríamos que hacerlo 0? Como Haskell es inmutable no podemos
 -- modificarla, pero si podemos devolver las dos "nuevas" personas.
 -- Para esto usamos una Tupla, que es básicamente un tipo que tiene
 -- dos variables del mismo o distinto tipo.
@@ -247,8 +294,7 @@ absorber2 persona victima =
 -- La misma función, con Jugador en vez de Persona y con `where` quedaría:
 
 absorber3 :: Jugador -> Jugador -> (Jugador, Jugador)
-absorber3 persona victima =
-    (nuevaPersona, victimaDrenada)
+absorber3 persona victima = (nuevaPersona, victimaDrenada)
   where
     poderAbsorbido = jugadorNivel persona + jugadorNivel victima
     nuevaPersona = Jugador (jugadorNombre persona) poderAbsorbido
@@ -256,9 +302,8 @@ absorber3 persona victima =
 
 -- Notemos que esta vez usamos los "getters" que nos regaló el record syntax.
 --
--- Otra funcionalidad poderosa de Haskell es el pattern matching. El mismo lo usamos
--- para desconstruir Personas anteriormente. Pero también podemos hacer pattern matching
--- con valores:
+-- Cuando el tipo tiene varios constructores, también podemos hacer pattern matching según
+-- ese constructor, ya que puede ser que tengan distinta forma (cantidad de argumentos).
 
 calcularArea :: Figura -> Float
 calcularArea (Circulo radio) = pi * radio ** 2
@@ -278,78 +323,28 @@ seLlamaBobby (Perro "bobby" _) = True
 seLlamaBobby (Perro "BOBBY" _) = True
 seLlamaBobby _ = False
 
--- Pasemos a algo más interesante. Las listas o arrays en Haskell se definen así,
--- siendo `:` el constructor de lista que toma un elemento y una lista
--- y nos devuelve otra lista con el elemento al principio.
-
-unaListaDeEnteros :: [Int]
-unaListaDeEnteros = [1, 2, 3, 4, 5] -- explicito
-
-otraListaDeEnteros :: [Int]
-otraListaDeEnteros = [1..5] -- generadores
-
-unaLista :: [Char]
-unaLista = 'h' : 'o' : 'l' :  'a' : [] -- con el constructor
-
--- Vieron que `:` va infijo, o sea se usa "entre" dos expresiones.
--- Esto se llama función infija y son funciones definidas normalmente.
--- Para haskell, las funciones cuyo nombre no empiece con una letra van a ser
--- infijas, como `+`, `:` o `<>`, mientras que las demás van a ser prefijas, como
--- `calcularArea` o `seLlamaBobby`.
-
--- La librería standard de Haskell trae varias funciones para trabajar con listas,
--- podemos ver la documentación aqui:
--- https://hackage.haskell.org/package/base-4.12.0.0/docs/Data-List.html
--- También, en ghci podemos escribir `:browse Data.List` y nos va a mostrar todo lo que
--- exporta ese módulo.
--- Ahora repasemos algunas de sus operaciones mas comunes.
---
--- Podemos sumar listas
-
-ambasListas :: [Int]
-ambasListas = unaListaDeEnteros <> otraListaDeEnteros
-
--- darlas vuelta
-
-alReves :: [Int]
-alReves = reverse ambasListas
-
--- acceder a su primer elemento o a la "cola" (todos menos el primero)
-
-elPrimeroAlFinal :: [Int]
-elPrimeroAlFinal = tail unaListaDeEnteros <> [head unaListaDeEnteros]
-
--- "modificar" cada elemento
-
-unaListaMasUno :: [Int]
-unaListaMasUno = map (+1) unaListaDeEnteros
-
--- Acá estamos haciendo "aplicación parcial". Supongamos una función:
-
-sumar :: Int -> Int -> Int
-sumar a b = a + b
-
--- si hacemos `(sumar 5)` nos devuelve una función de tipo
--- `Int -> Int`
-
-sumarCinco :: Int -> Int
-sumarCinco = sumar 5
-
-doce :: Int
-doce = sumarCinco 7
-
--- Decimos que estamos haciendo aplicación parcial cuando le pasamos menos parámetros
--- a una función de los que espera recibir. Hacer esto devuelve una función diferente
--- (y con diferente tipo) que espera recibir los que no le pasamos a la primera.
 
 -- ***********************************************
 -- ****************** EJERCICIO 3 ****************
 -- ***********************************************
--- Dada una lista de jugadores, queremos subir el nivel de todos en un
--- número dado `x`. Definir esa función.
+-- Ahora vamos a definir que los Jugadores son comparables y ordenables por su nivel.
+-- Para esto podríamos hacer que el tipo sencillamente derive `Ord` y `Eq` como `Animal`,
+-- pero esto compararía Jugadores por su nombre también, ya que por default las instancias
+-- autogeneradas usan todos los elementos de un tipo para generarse.
+--
+-- El ejercicio consiste de hacer que Jugador implemente `Ord` y `Eq` pero solo comparando su poder.
 
-levelear :: Int -> [Jugador] -> [Jugador]
-levelear = error "Escribime!"
+instance Eq Jugador where
+  j1 == j2 = jugadorNivel j1 == jugadorNivel j2
+
+instance Ord Jugador where
+  j1 <= j2 = jugadorNivel j1 <= jugadorNivel j2
+
+jugadoresOrdenados = sort [Jugador "Paulina" 9, Jugador "Marilinia" 2, Jugador "Pepe" 5, Jugador "Paulina" 3]
+
+-- Si implementamos correctamente estas funciones, la siguiente expresión deberia ser True:
+
+estanOrdenados = jugadoresOrdenados == [Jugador "Marilinia" 2, Jugador "Paulina" 3, Jugador "Pepe" 5,  Jugador "Paulina" 9]
 
 -- ***********************************************
 -- *************** FIN EJERCICIO 3 ***************
@@ -384,7 +379,7 @@ helloWorld = do
 
 prompt :: IO String
 prompt = do
-    putStrLn "Enter a text plz:"
+    putStrLn "Enter text plz:"
     line <- getLine
     pure line
 

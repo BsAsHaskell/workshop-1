@@ -9,28 +9,10 @@ funcional Haskell, es decir que el único pre-requisito para hacerlo es saber pr
 
 El taller consiste de dos partes:
 
-1. Vamos a tener una introducción super veloz al lenguaje, su sintaxis y libreria estandard
+1. Vamos a tener una [introducción](#intro) super veloz al lenguaje, su sintaxis y libreria estandard
 siguiendo el archivo `Intro.hs` en la carpeta `src/`.
 2. Formando grupos de 2 o 3 (aunque no es obligatorio, recomendamos hacerlo de al menos dos) vamos a implementar
-un cliente super simple de linea de comandos para la API de [TheMovieDB](https://themoviedb.org).
-
-Para empezar, queremos que si hacemos
-
-```bash
-stack run buscar "la batalla de argelia"
-```
-
-se consulte al endpoint de búsquedas documentado [aquí](https://developers.themoviedb.org/3/search/search-movies)
-y se imprima en pantalla la lista de peliculas que el mismo devuelve.
-
-Luego, vamos a usar el [endpoint de recomendaciones](https://developers.themoviedb.org/3/movies/get-movie-recommendations)
-y queremos que al hacer
-
-```bash
-stack run recomendar 917
-```
-
-nos imprima las recomendaciones para la peli con ID `917`.
+un [cliente](#cliente) super simple de linea de comandos para la API de [TheMovieDB](https://themoviedb.org).
 
 ### API key
 

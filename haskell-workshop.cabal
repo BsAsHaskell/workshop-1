@@ -12,7 +12,7 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 library
-  ghc-options:         -Wall -Wno-unused-imports -Wno-missing-signatures
+  ghc-options:         -Wall -Wno-unused-imports -Wno-missing-signatures -Wno-type-defaults
   hs-source-dirs:      src
   exposed-modules:     Pelis
                      , Intro
