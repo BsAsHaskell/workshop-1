@@ -1,6 +1,6 @@
 module Main where
 
-import Pelis
+import Solucion
 
 main :: IO ()
 main = run
