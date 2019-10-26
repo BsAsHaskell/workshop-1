@@ -117,6 +117,8 @@ stack run
 Nos traiga la persona con ID 54693 e imprima en la consola su
 nombre y fecha de nacimiento.
 
+El endpoint correspondiente es: `http://api.themoviedb.org/3/person/[id]?api_key=[key]`
+
 Podemos usar el código que hay en [Librerias.md](Librerias.md)
 para el data type `Actriz`.
 
@@ -130,6 +132,8 @@ stack run 1
 
 Nos traiga la persona con ID 1 e imprima lo mismo que antes.
 
+El endpoint correspondiente es el mismo que antes.
+
 La función de Haskell para obtener los argumentos de consola
 es `getArgs` y se consigue importando `System.Environment`.
 
@@ -142,6 +146,8 @@ stack run pelicula 1
 ```
 
 Nos traiga la pelicula con ID 1 e imprima su titulo y descripción.
+
+El endpoint correspondiente es: `http://api.themoviedb.org/3/movie/[id]?api_key=[key]`
 
 ¡Ojo! Hay que modificar el comando para que si hacemos
 
@@ -172,6 +178,8 @@ stack run buscar "back to the future"
 ```
 
 Nos imprima los títulos y la descripción de cada resultado en la pantalla.
+
+El endpoint correspondiente es: `http://api.themoviedb.org/3/search/movie/?api_key=[key]&query=[busqueda]`
 
 ## Después del taller
 
