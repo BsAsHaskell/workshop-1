@@ -18,7 +18,7 @@ module Intro where
 
 -- A diferencia de JavaScript, pero como Python, Haskell es sensible a la indentación.
 -- Eso significa que las declaraciones deben arrancar en la columna 0,
--- y cualquier linea puede partirse siempre y cuando se indente un poco mas que la anterior.
+-- y cualquier línea puede partirse siempre y cuando se indente un poco más que la anterior.
 
 import Data.List (sort)
 
@@ -203,7 +203,7 @@ goku = Persona "Goku" 9001
 -- Y Segundo, le hace el trabajo de deducir el tipo del resto del programa más fácil
 -- al compilador.
 
--- Escribamos una función ahora. Las funciones son valores de primer tipo en Haskell
+-- Escribamos una función ahora. Las funciones son ciudadanos de primera clase en Haskell,
 -- y en principio no se diferencian en nada de los valores contantes que vimos antes.
 -- Vamos a escribir una función que sume el poder de una persona:
 
@@ -217,8 +217,8 @@ powerUp (Persona nombre poder) = Persona nombre (poder + 1)
 -- V       V  V       V  V
 -- powerUp :: Persona -> Persona
 --          +-------------------- Pattern match en el constructor
---          |       +----+------- Nombre de los parámetros
---          V       V    V
+--          |       +------+----- Nombre de los parámetros
+--          V       V      V
 -- powerUp (Persona nombre poder) =
 --     +-------------------------- Devolvemos una Persona nueva
 --     |       +------------------ Con el mismo nombre
@@ -264,9 +264,9 @@ absorber (Persona nombre poderAnterior) (Persona _ otroPoder) =
 -- Para esto usamos una Tupla, que es básicamente un tipo que tiene
 -- dos variables del mismo o distinto tipo.
 -- Esta función tambien introduce el `let`, que es la manera que tenemos
--- de asignar valores temporales en una función.
+-- de crear definiciones temporales en una función.
 
-absorber2:: Persona -> Persona -> (Persona, Persona)
+absorber2 :: Persona -> Persona -> (Persona, Persona)
 absorber2 persona victima =
     let poderAbsorbido = getPoder persona + getPoder victima
         nuevaPersona = Persona (getNombre persona) poderAbsorbido
@@ -316,7 +316,7 @@ calcularArea2 figura = case figura of
   Circulo radio -> pi * radio ** 2
   Cuadrado base altura -> base * altura
 
--- Además, podes hacer pattern matching con valores, por ejemplo:
+-- Además, podés hacer pattern matching con valores, por ejemplo:
 
 seLlamaBobby :: Animal -> Bool
 seLlamaBobby (Perro "bobby" _) = True
@@ -355,7 +355,7 @@ estanOrdenados = jugadoresOrdenados == [Jugador "Marilinia" 2, Jugador "Paulina"
 ----------------------------------------------------------------------------
 
 -- Okay, hasta acá vimos como definir tipos, valores y funciones.
--- Lo que nos falta es ver como hacer ... cosas.
+-- Lo que nos falta es ver cómo hacer ... cosas.
 -- Si todo es inmutable, ¿Cómo imprimimos en pantalla, o abrimos un archivo?
 -- Para esto Haskell tiene un tipo especial llamado `IO a`, donde `a` es el tipo
 -- del resultado de evaluar y ejecutar esas acciones.
@@ -364,15 +364,15 @@ estanOrdenados = jugadoresOrdenados == [Jugador "Marilinia" 2, Jugador "Paulina"
 -- Para esto escribimos `do` y las subsecuentes líneas indentadas al mismo nivel.
 -- Todas estas lineas deben ser del tipo IO.
 
---           +----- Esto significa que estamos haciendo IO
---           |  +-- () significa que no devolvemos nada, el tipo vacío
---           V  V
+--            +---- Esto significa que estamos haciendo IO
+--            |  +- () significa que no devolvemos nada, el tipo vacío
+--            V  V
 helloWorld :: IO ()
 helloWorld = do
     putStrLn "Hello World!"
     putStrLn "so much functional wow"
 
--- El bloque `do` secuencia ambas acciones por lo que si evaluamos esta función,
+-- El bloque `do` secuencia ambas acciones, por lo que si evaluamos esta función,
 -- deberiamos ver ambas líneas impresas en pantalla.
 --
 -- Ahora obtengamos alguna entrada de una persona:
@@ -451,7 +451,7 @@ saludoConEmocion nombre = saludo nombre <> "!!!!"
 stringToFloat :: String -> Float
 stringToFloat numeroComoString = read numeroComoString
 
--- Podemos escribir nuestro propia función análoga a getLine pero
+-- Podemos escribir nuestra propia función análoga a getLine, pero
 -- que devuelve Floats:
 
 getFloat :: IO Float
