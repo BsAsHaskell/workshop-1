@@ -6,14 +6,14 @@ Este archivo pretende dos cosas:
 
 
 # Import
-Todos los ejemplos que veamos en este archivo van a ser uso de bibliotecas externas, por lo que lo primero que tendremos que hacer es importarlas.
-Existen muchos _sabores_ de como hacer esto, pero vamos a quedarnos con "unqualified imports".
+Todos los ejemplos que veamos en este archivo van a hacer uso de bibliotecas externas, por lo que lo primero que tendremos que hacer es importarlas.
+Existen muchas formas de hacer esto, pero vamos a quedarnos con "unqualified imports".
 
 Haskell nos obliga a poner los imports como una de las primeras cosas en un archivo, de lo contrario nos da un error gramatical:
 `parse error on input ‘import’`
 
 
-Por ejemplo, importemos la función de `sort` _(ordenar)_ y `reverse` _(dar vuelta)_ de listas
+Por ejemplo, importemos las funciones `sort` _(ordenar)_ y `reverse` _(dar vuelta)_ de listas
 
 
 ```haskell
@@ -28,7 +28,7 @@ import           Data.List                      ( sort
 ```
 _[La documentación oficial de `Data.List`](http://hackage.haskell.org/package/base-4.11.1.0/docs/Data-List.html)_
 
-Ahora que está importada, podemos hacer uso de ella:
+Ahora que están importadas, podemos hacer uso de ellas:
 ```haskell
 reverse (sort [3, 1, 2]) -- [3,2,1]
 ```
@@ -40,13 +40,13 @@ https://www.stackage.org/haddock/lts-12.4/aeson-1.3.1.1/Data-Aeson.html
 
 ### Descripción
 Su propósito es darnos la facilidad de convertir `JSON` a valores de nuestros tipos (o fallar gracilmente).
-Posiblemente la más rica de las bibliotecas que vayamos a usar, pero para este workshop vamos a apenas tocar la superficie de lo que `aeson` puede hacer.
+Posiblemente es la más rica de las bibliotecas que vamos a usar, pero para este workshop sólo vamos a apenas tocar la superficie de lo que `aeson` puede hacer.
 
 ### Usos
 #### Transformar de `JSON` a Haskell
 La idea de `aeson` es que algo es transformable de `JSON` si nuestro tipo tiene definida una instancia de la typeclass `FromJSON` _(pss, este es el código que vimos arriba en `Http`)_.
 
-Imaginémosnos que tenemos el tipo de dato:
+Imaginemos que tenemos el siguiente tipo de dato:
 ```haskell
 data Actriz = Actriz
   { nombre :: String
@@ -111,7 +111,7 @@ objeto .: "foo"
 (.:) objeto "foo"
 ```
 
-Toda esta biblioteca se encarga de manejar los errores cuando las claves no están, o no son del tipo que querríamos en nuestro tipo; todo con muy poco código.
+Toda esta biblioteca se encarga de manejar los errores cuando las claves no están, o no son del tipo que querríamos que sea; todo con muy poco código.
 
 Muchas veces queremos obtener más de una clave de un JSON, y combinarlo con otras claves (como era nuestro ejemplo original). Por suerte `Parser`, al igual que `IO` que vimos antes, es una `monada` y está programada para poder ser combinada, por lo que podemos escribir:
 ```haskell
@@ -147,7 +147,7 @@ instance FromJSON Actriz where
 ```
 
 #### Otra forma: `deriving`
-Esta vez vamos a hacer 🙌 al compilador de Haskell quien puede inferir mucho de esto, si hacemos que nuestro `Data` tenga los mismos nombres que los atributos del JSON y _derivar_.
+Esta vez vamos a hacer 🙌 al compilador de Haskell, quien puede inferir mucho de esto si hacemos que nuestro `Data` tenga los mismos nombres que los atributos del JSON y _derivamos_.
 
 Para esto necesitamos agregar el Pragma: `DeriveGeneric` _(agregar `{-# LANGUAGE DeriveGeneric #-}` como primera línea de nuestro `.hs`)_ y cambiar nuestro `data` así:
 
@@ -164,13 +164,13 @@ Qué lindo que es Haskell.
 
 ## `Http`
 ### Descripción
-Hacer pedidos por `HTTP` tiene varias intricaciones. Saber el schema (`http`/`https`), poder interpretar la URL o qué hacer cuando no. El verbo con el que queramos acceder (`GET`/`POST`/etc), si queremos pasarle un cuerpo al pedido, y tantas otras cosas. Todo esto es altamente interesante, pero les queríamos facilitar una _biblioteca_ nuestra que simplifica inmensamente todo esto _(y es sumamente limitada en lo que puede hacer)_.
+Hacer pedidos por `HTTP` puede resultar un poco intrincado: hay que saber el schema (`http`/`https`), poder interpretar la URL, saber el verbo con el que queremos acceder (`GET`/`POST`/etc), si queremos pasarle un cuerpo al pedido, y tantas otras cosas. Todo esto es altamente interesante, pero para el taller les queremos facilitar una _biblioteca_ nuestra que simplifica inmensamente todo esto _(y es sumamente limitada en lo que puede hacer)_.
 
 ### Documentación
 El código está en el archivo `src/Http.hs`.
 
 ### Usos
-La biblioteca tiene solo una función: `get`, que dada una URL, hace un `GET` pedido a esta.
+La biblioteca tiene solo una función: `get`, que dada una URL, hace un pedido `GET` a esta.
 
 #### GET
 ```haskell
@@ -178,7 +178,7 @@ get :: FromJSON response => String -> IO response
 ```
 _(`FromJSON` es de `aeson`)_
 
-Por ejemplo, si tuviésemos un tipo `Persona` y hubiese una página a la que si le hiciecemos `GET` a `http://www.personas.com/Pepe` nos devolviese un `JSON` que pueda _matchear_ con nuestro tipo `Persona`, entonces podríamos escribir:
+Por ejemplo, si tenemos un tipo `Persona` y si cuando hacemos un `GET` a `http://www.personas.com/Pepe` nos devuelve un `JSON` que _matchea_ con nuestro tipo `Persona`, entonces podemos escribir:
 
 ```haskell
 data Persona = Persona
@@ -187,6 +187,6 @@ data Persona = Persona
 
 instance FromJSON Persona
 
-getPersona :: String => IO Persona
-getPersona nombre = get ("http://www.personas.com/" <> nombre)
+getPersona :: String -> IO Persona
+getPersona nombre = Http.get ("http://www.personas.com/" <> nombre)
 ```
