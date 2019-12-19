@@ -6,11 +6,11 @@
  - y puede ocupar varios renglones -}
 
 -- Todo archivo de un proyecto Haskell tiene que definir de que módulo es,
--- y debe corresponder con el nombre del archivo y su ubicación en el proyecto (como en Java)
+-- y debe corresponderse con el nombre del archivo y su ubicación en el proyecto (como en Java)
 module Intro where
 
 -- Con la sintaxis anterior el módulo exporta todas las funciones y declaraciones que define.
--- Si se quiere, se puede limitar que cosas exporta asi:
+-- Si se quiere, se puede limitar qué cosas exporta así:
 -- `module Intro where (unaFuncion, UnTipo)`
 --
 -- Aparte, si el nombre del módulo es `Main` entonces su función `main`
@@ -18,12 +18,13 @@ module Intro where
 
 -- A diferencia de JavaScript, pero como Python, Haskell es sensible a la indentación.
 -- Eso significa que las declaraciones deben arrancar en la columna 0,
--- y cualquier línea puede partirse siempre y cuando se indente un poco más que la anterior.
+-- y cualquier línea puede partirse siempre y cuando la nueva línea se indente un poco más
+-- que la anterior.
 
 import Data.List (sort)
 
 -- Acá importamos la función `sort` del módulo Data.List.
--- Hay muchas maneras de importar cosas, pero por ahora vamos a ignorar todas.
+-- Hay muchas otras maneras de importar cosas, que por ahora vamos a ignorar.
 
 
 ---------------------------------------------------------------------------
@@ -35,7 +36,7 @@ import Data.List (sort)
 --
 -- > stack ghci src/Intro.hs
 --
--- Acá podemos probar cosas sencillas como `4 + 6` o "hola que tal".
+-- Acá podemos probar cosas sencillas como `4 + 6` o `"hola que tal"`.
 --
 -- Aparte, podemos ver el tipo de una expresión con `:t` así
 -- (`[Char]` es lo mismo que `String`):
@@ -51,12 +52,12 @@ import Data.List (sort)
 --                        Tipos de Datos                                 --
 ---------------------------------------------------------------------------
 
--- En otro lenguajes `=` suele significar asignación.
+-- En otros lenguajes `=` suele significar asignación.
 -- En Haskell, `=` significa "está definido así".
 
 --   +------------------------------- Nombre del *tipo*
 --   |         +--------------------- Nombre del *constructor*
---   |         |       +------------- Toma una `String`
+--   |         |       +------------- Toma un `String`
 --   |         |       |      +------ Y toma un `Int`
 --   |         |       |      |
 --   |         |       |      |   +-- Además, el tipo es "mostrable" (lo vemos depués)
@@ -66,7 +67,7 @@ data Persona = Persona String Int deriving (Show)
 
 -- Usamos `data` para definir un nuevo tipo de datos.
 -- Todos los tipos deben empezar con mayúscula, y el nombre de este tipo es `Persona`.
--- Este tipo toma dos argumentos: Uno de tipo `String` y otro de tipo `Int`.
+-- El constructor de este tipo toma dos argumentos: Uno de tipo `String` y otro de tipo `Int`.
 -- En este caso vamos a usarlos para representar el nombre y el poder de una persona.
 -- El constructor se usa igual que una función, y es la única manera de construir
 -- variables de tipo `Persona`.
@@ -81,24 +82,24 @@ maria = Persona "Maria" 32
 --   +------+---------+-------------------- Igual que antes
 --   |      |         |     +-------------- "O"
 --   |      |         |     | +------------ Otro constructor
---   |      |         |     | |        +--- Argumentos del segundo constructor
---   V      V         V     V V        V
-data Figura = Circulo Float | Cuadrado Float Float deriving (Show)
+--   |      |         |     | |          +- Argumentos del segundo constructor
+--   V      V         V     V V          V
+data Figura = Circulo Float | Rectangulo Float Float deriving (Show)
 
 -- Este ejemplo define un tipo `Figura` con dos constructores,
 -- cada uno con distinta cantidad de argumentos.
 -- Una figura puede ser un `Circulo` que toma un radio,
--- **o** un `Cuadrado`, que toma alto y ancho.
+-- **o** un `Rectangulo`, que toma alto y ancho.
 
 -- A diferencia de otros lenguajes, Haskell no provee igualdad, comparación
--- o siquiera una manera de mostrar tipos arbitrarios.
+-- y ni siquiera una manera de mostrar tipos arbitrarios.
 -- Para esto usa un sistema llamado "typeclasses".
 -- Una typeclass es una familia de funciones, y un tipo puede o no
 -- implementar (o sea, ser miembro de) una typeclass.
--- Por ejemplo la typeclass `Show` tiene la función `show` que ... muestra un valor
--- de un tipo que implemente `Show`.
--- Por suerte, las typeclass básicas podemos "derivarlas" automáticamente,
--- es decir, que el compilador las va a escribir por nosotros.
+-- Por ejemplo la typeclass `Show` tiene la función `show` que sirve para "mostrar"
+-- (es decir, representar como `String`) un valor de un tipo que implemente `Show`.
+-- Por suerte, a las typeclass básicas podemos "derivarlas" automáticamente,
+-- es decir, el compilador las va a escribir por nosotros.
 -- Las typeclass básicas incluyen `Show` para mostrar, `Ord` para ordenar
 -- (o sea comparar por mayor o menor) y `Eq` para la igualdad.
 
@@ -124,17 +125,17 @@ gatitou1_es_igual_que_gatitou2 = gatitou1 == gatitou2
 -- Ahora definí un animal y una persona en la consola.
 -- > persona1 = Persona "nombre" 5
 -- > perrito = Perro "bobby" 7
--- ¿Cuál es mas grande, un perro llamado "bobby" de 7 años o un gato llamado "pepita"?
--- ¿Y dos perros con se llaman igual pero uno es mas grande?
+-- ¿Cuál es más grande, un perro llamado "bobby" de 7 años o un gato llamado "pepita"?
+-- ¿Y dos perros que se llaman igual, siendo uno más viejo que el otro?
 --
 -- ***********************************************
 -- **************** FIN EJERCICIO 1 **************
 -- ***********************************************
 
--- Hay otra forma mas de definir tipos y la llamamos "record syntax".
+-- Hay otra forma más de definir tipos, y la llamamos "record syntax".
 -- Lo bueno que tiene es que nos deja nombrar los parámetros de un constructor
--- y al mismo tiempo define funciones para obtener los mismos.
--- La única trampa es que estas funciones generadas no pueden repetirse
+-- y al mismo tiempo define funciones para obtener los valores de los mismos.
+-- La única "trampa" es que estas funciones generadas no pueden repetirse
 -- en el mismo módulo, por eso es buena práctica prefijarlas con el
 -- nombre del tipo.
 
@@ -151,7 +152,7 @@ nombreDeJugador1 = jugadorNombre jugador1
 nivelDeJugador1 = jugadorNivel jugador1
 
 -- Finalmente tenemos tipos "genéricos" o paramétricos.
--- Estos son tipos donde algún tipo interno es un argumento,
+-- Estos son tipos que internamente toman a otro tipo como argumento,
 -- muy como en Java o TypeScript.
 --
 --   +-------------------------- Nombre del tipo
@@ -164,7 +165,7 @@ nivelDeJugador1 = jugadorNivel jugador1
 data Opcional a = Algun a | Nada deriving (Show)
 
 -- Este tipo por ejemplo sería como el `Optional<T>` en Java,
--- puede "tener: un valor de tipo `a` o estar vacío.
+-- puede tener un valor de tipo `a` o estar vacío.
 
 unNumero = Algun 5
 
@@ -178,14 +179,14 @@ ningunString = Nada
 ---------------------------------------------------------------------------
 
 -- Aunque ya lo vimos, empecemos definiendo una constante.
--- Así definimos un valor del tipo `Persona` que definimos antes:
+-- Así definimos un valor del tipo `Persona`, que habíamos definido antes:
 
 vegeta = Persona "Vegeta" 9000
 
--- Si ponemos dos cosas juntas (o sea, separadas por un espacio),
+-- Si ponemos dos cosas juntas (es decir, separadas por un espacio),
 -- Haskell va a intentar "aplicar" los valores de izquierda a derecha.
 -- En este caso, como `Persona` es el constructor de tipo y es una función,
--- le va a aplicar la String "Vegeta" y el Int 9000.
+-- le va a aplicar el String "Vegeta" y el Int 9000.
 
 -- También podemos anotar un valor con el tipo:
 
@@ -198,7 +199,7 @@ goku = Persona "Goku" 9001
 -- a que te referís. Pero es una buena práctica anotar todas las definiciones
 -- del nivel superior, o sea a nivel módulo. Esto es por dos razones:
 
--- Primero, hace mucho más fácil de leer y mantener el código si sabes de que tipo
+-- Primero, hace mucho más fácil de leer y mantener el código si sabés de qué tipo
 -- es un valor o una función.
 -- Y Segundo, le hace el trabajo de deducir el tipo del resto del programa más fácil
 -- al compilador.
@@ -210,24 +211,27 @@ goku = Persona "Goku" 9001
 powerUp :: Persona -> Persona
 powerUp (Persona nombre poder) = Persona nombre (poder + 1)
 
+-- Analicemos esto en detalle:
+--
 -- +-------+--------------------- powerUp tiene el tipo:
 -- |       |  +------------------ Toma una Persona como argumento
 -- |       |  |       +---------- Flecha de función
 -- |       |  |       |  +------- Devuelve una Persona
 -- V       V  V       V  V
 -- powerUp :: Persona -> Persona
+--
 --          +-------------------- Pattern match en el constructor
 --          |       +------+----- Nombre de los parámetros
 --          V       V      V
 -- powerUp (Persona nombre poder) =
 --     +-------------------------- Devolvemos una Persona nueva
 --     |       +------------------ Con el mismo nombre
---     |       |     +------------ Y el poder más uno
---     V       V     V
---     Persona name (poder + 1)
+--     |       |       +---------- Y el poder más uno
+--     V       V       V
+--     Persona nombre (poder + 1)
 
 -- Haskell es un lenguaje inmutable, así que no podemos "modificar" la
--- persona, solo podemos devolver una nueva.
+-- persona, sólo podemos devolver una nueva.
 
 -- ***********************************************
 -- ****************** EJERCICIO 2 ****************
@@ -248,9 +252,9 @@ getPoder = error "Escribime!"
 -- **************** FIN EJERCICIO 2 **************
 -- ***********************************************
 
--- El tipo de las funciones que toman multiples argumentos usan la misma flecha,
+-- El tipo de las funciones que toman múltiples argumentos usa las mismas flechas,
 -- siendo la última cosa lo que devuelve la función.
--- Esta función absorbe el poder de una persona y se lo asigna a uno mismo.
+-- Por ejemplo, esta función absorbe el poder de una persona y se lo asigna a uno mismo.
 -- El guión bajo en el segundo patrón significa "no voy a usar este valor"
 -- y así no lo asignamos a una variable (total no lo necesitamos).
 
@@ -258,13 +262,14 @@ absorber :: Persona -> Persona -> Persona
 absorber (Persona nombre poderAnterior) (Persona _ otroPoder) =
     Persona nombre (poderAnterior + otroPoder)
 
--- ¡Atención! ¿Qué pasa con la persona que le absorvimos el poder?
--- ¿No tendríamos que hacerlo 0? Como Haskell es inmutable no podemos
--- modificarla, pero si podemos devolver las dos "nuevas" personas.
+-- ¡Atención! ¿Qué pasa con la persona a la que le absorbimos el poder?
+-- ¿No tendríamos que hacer que su poder sea 0?
+-- Como Haskell es inmutable no podemos modificarla, pero si podemos devolver
+-- las dos "nuevas" personas.
 -- Para esto usamos una Tupla, que es básicamente un tipo que tiene
 -- dos variables del mismo o distinto tipo.
 -- Esta función tambien introduce el `let`, que es la manera que tenemos
--- de crear definiciones temporales en una función.
+-- para crear definiciones temporales en una función.
 
 absorber2 :: Persona -> Persona -> (Persona, Persona)
 absorber2 persona victima =
@@ -273,25 +278,25 @@ absorber2 persona victima =
         victimaDrenada = Persona (getNombre victima) 0
     in (nuevaPersona, victimaDrenada)
 
--- Hay dos cosas importantes acá: `let` y la *prioridad de aplicación*.
+-- Hay dos cosas importantes acá: el `let` y la *prioridad de aplicación*:
 --
--- `let ... in` nos permite definir varias cosas que solo existen en la
--- expresion que sigue inmediatamente al `in`.
+-- * `let ... in` nos permite definir varias cosas que solo existen en la
+--   expresion que sigue inmediatamente al `in`.
 --
--- Las funciones aplican con más prioridad que cualquier cosa, por lo que
+-- * Las funciones aplican con más prioridad que cualquier cosa, por lo que
 --
---     getPoder persona + getPoder victima
+--       getPoder persona + getPoder victima
 --
--- es lo mismo que
+--   es lo mismo que
 --
---     (getPoder persona) + (getPoder victima)
+--       (getPoder persona) + (getPoder victima)
 --
 
 -- Otra manera de declarar cosas adentro de una función es con una
--- clausula `where`. Mientras que con un `let` las expresiones viven solo
+-- cláusula `where`. Mientras que con un `let` las expresiones viven sólo
 -- después del `in`, con un `where` viven en todo el cuerpo de la función.
 --
--- La misma función, con Jugador en vez de Persona y con `where` quedaría:
+-- La misma función, con Jugador en vez de Persona y usando `where`, quedaría:
 
 absorber3 :: Jugador -> Jugador -> (Jugador, Jugador)
 absorber3 persona victima = (nuevaPersona, victimaDrenada)
@@ -303,18 +308,18 @@ absorber3 persona victima = (nuevaPersona, victimaDrenada)
 -- Notemos que esta vez usamos los "getters" que nos regaló el record syntax.
 --
 -- Cuando el tipo tiene varios constructores, también podemos hacer pattern matching según
--- ese constructor, ya que puede ser que tengan distinta forma (cantidad de argumentos).
+-- ese constructor, ya que puede ser que tengan distinta forma.
 
 calcularArea :: Figura -> Float
 calcularArea (Circulo radio) = pi * radio ** 2
-calcularArea (Cuadrado base altura) = base * altura
+calcularArea (Rectangulo base altura) = base * altura
 
 -- Hay otra manera de escribir lo mismo usando una clausula `case`:
 
 calcularArea2 :: Figura -> Float
 calcularArea2 figura = case figura of
   Circulo radio -> pi * radio ** 2
-  Cuadrado base altura -> base * altura
+  Rectangulo base altura -> base * altura
 
 -- Además, podés hacer pattern matching con valores, por ejemplo:
 
@@ -327,12 +332,12 @@ seLlamaBobby _ = False
 -- ***********************************************
 -- ****************** EJERCICIO 3 ****************
 -- ***********************************************
--- Ahora vamos a definir que los Jugadores son comparables y ordenables por su nivel.
+-- Ahora vamos a definir que los Jugadores sean comparables y ordenables por su nivel.
 -- Para esto podríamos hacer que el tipo sencillamente derive `Ord` y `Eq` como `Animal`,
--- pero esto compararía Jugadores por su nombre también, ya que por default las instancias
+-- pero esto compararía Jugadores por su nombre también, ya que por defecto las instancias
 -- autogeneradas usan todos los elementos de un tipo para generarse.
 --
--- El ejercicio consiste de hacer que Jugador implemente `Ord` y `Eq` pero solo comparando su poder.
+-- El ejercicio consiste de hacer que `Jugador` implemente `Ord` y `Eq`, pero sólo comparando su poder.
 
 instance Eq Jugador where
   j1 == j2 = error "Escribime!"
@@ -361,8 +366,8 @@ estanOrdenados = jugadoresOrdenados == [Jugador "Marilinia" 2, Jugador "Paulina"
 -- del resultado de evaluar y ejecutar esas acciones.
 --
 -- Una última cosa, para "encadenar" acciones de IO tenemos que abrir un bloque `do`.
--- Para esto escribimos `do` y las subsecuentes líneas indentadas al mismo nivel.
--- Todas estas lineas deben ser del tipo IO.
+-- Para esto escribimos `do`, con las líneas subsecuentes indentadas al mismo nivel.
+-- Todas estas líneas deben ser del tipo IO.
 
 --            +---- Esto significa que estamos haciendo IO
 --            |  +- () significa que no devolvemos nada, el tipo vacío
@@ -373,7 +378,7 @@ helloWorld = do
     putStrLn "so much functional wow"
 
 -- El bloque `do` secuencia ambas acciones, por lo que si evaluamos esta función,
--- deberiamos ver ambas líneas impresas en pantalla.
+-- deberíamos ver ambas líneas impresas en pantalla.
 --
 -- Ahora obtengamos alguna entrada de una persona:
 
@@ -385,8 +390,8 @@ prompt = do
 
 -- Acá tenemos un simbolo nuevo: `<-`
 -- Esta flechita nos deja obtener el resultado de una acción IO,
--- de tal manera que si lo que está a la derecha de la flechita es `IO a`,
--- lo que está a la izquierda es del tipo `a`.
+-- de tal manera que si lo que está a la derecha de la flechita es de tipo `IO a`,
+-- lo que está a la izquierda es de tipo `a`.
 --
 -- El tipo de `getLine` es:
 --
@@ -404,12 +409,12 @@ prompt = do
 --       line <- getLine
 --       line
 --
--- Tendríamos un error de tipo. Esto es porque `line` es tipo String,
--- pero queremos `IO String`. Para esto tenemos la función `pure`
+-- Tendríamos un error de tipo. Esto es porque `line` es de tipo String,
+-- pero en realidad queremos `IO String`. Para esto tenemos la función `pure`,
 -- que toma un valor de tipo `a` y lo "eleva" a un `IO a`.
 --
--- Además, podemos usar `let` en bloques `do` muy parecido a antes,
--- para asignar variables normales.
+-- Además, podemos usar `let` en bloques `do`, muy parecido a como lo habíamos
+-- usado antes para definir constantes:
 
 customPrompt :: String -> IO String
 customPrompt string = do
@@ -481,7 +486,7 @@ multiplicameDosNumeros = do
 -- correr la función y tener una interacción como la siguiente:
 
 -- ¿Qué figura querés?:
--- > cuadrado
+-- > rectangulo 
 -- ¿Cuál es la base?:
 -- > 5
 -- ¿Cuál es la altura?:
@@ -489,7 +494,7 @@ multiplicameDosNumeros = do
 -- El área es: 500
 
 -- Para empezar, vamos a hacer un par de funciones de IO que nos devuelvan
--- un círculo y un cuadrado respectivamente usando input de la persona:
+-- un círculo y un rectángulo, respectivamente, usando input de la persona:
 
 -- De la primera les dejamos el tipo ya escrito:
 getCirculo :: IO Figura
@@ -506,16 +511,16 @@ getCirculo = error "Escribime!"
 -- Una vez obtenido el valor, debería devolver un Círculo.
 -- Si Figura no tiene definida una instancia de Show la función no
 -- va a imprimir nada, pero si le escribimos deriving Show al final
--- de la definición de Figura debería también imprimir:
+-- de la definición de Figura, debería también imprimir:
 
 -- Circulo 20.0
 
 -- -------------------------------------------------------------------------
--- Ahora hagamos lo mismo para obtener cuadrados. 
+-- Ahora hagamos lo mismo para obtener rectángulos. 
 -- En este caso nos debería pedir la base y la altura.
 -- Acá te toca a vos escribir el tipo aparte de la implementación.
 
-getCuadrado = error "Escribime!"
+getRectangulo = error "Escribime!"
 
 -- Lo siguiente que podemos hacer es una función que le pregunte a quien
 -- corrió la función qué tipo de figura quiere ingresar y que luego,
@@ -528,8 +533,8 @@ getFigura = error "Escribime!"
 -- Que figura queres?
 -- > 
 
--- Si ingresamos cuadrado, nos debería preguntar la base y la altura
--- como en getCuadrado; y si ingresamos circulo, nos debería pedir el radio.
+-- Si ingresamos rectangulo, nos debería preguntar la base y la altura
+-- como en getRectangulo; y si ingresamos circulo, nos debería pedir el radio.
 -- Esta función de IO debería terminar devolviendo la figura correspondiente.
 
 -- Con todo esto ya tendríamos todo el código para obtener figuras ingresadas
